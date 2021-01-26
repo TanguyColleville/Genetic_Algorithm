@@ -43,15 +43,17 @@ class RotTable:
     ###################
     # READING METHODS #
     ###################
-
+    def __str__(self):
+        return "{}".format(self.__Rot_Table)
+    
     def getTwist(self, dinucleotide):
-        return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][0]
+        return self.__Rot_Table[dinucleotide][0]
 
     def getWedge(self, dinucleotide):
-        return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][1]
+        return self.__Rot_Table[dinucleotide][1]
 
     def getDirection(self, dinucleotide):
-        return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][2]
+        return self.__Rot_Table[dinucleotide][2]
 
     def getRotTable(self):
         return self.__Rot_Table
@@ -71,6 +73,6 @@ class RotTable:
         traj.compute(seq, self) # On calcule la trajectoire
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
-        return np.linalg.norm(extremite_2-extremite_1)#.length() # On retourne le score
+        return (extremite_2-extremite_1).length # On retourne le score
 
     ###################

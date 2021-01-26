@@ -8,13 +8,12 @@ from operator import itemgetter, attrgetter
 class Population():
     """Represents the population of rotation tables (individuals)"""
 
-    def __init__(self, seq,n=10):
+    def __init__(self, seq,n=5):
         self._pop = []  # Liste de couple d'invididus i.e. RotTable avec leurs scores
         self._current_gen = 0 # génération de la population à l'année 0
         self._seq = seq  # Séquence à l'étude
-        self._len = n  # nombre d'éléments de la population
         self._current_best = 0
-        for e in range(self._len):
+        for e in range(n):
             self.add_to_pop(RotTable(randomGen=True), None) # on ajoute un individu à la population avec un score nul par défaut
     
     ##############
@@ -28,7 +27,7 @@ class Population():
         return self._seq
     
     def _Get_len(self):
-        return self._len
+        return len(self._Get_pop())
 
     def _Get_Current_Gen(self):
         return self._current_gen
@@ -84,26 +83,39 @@ class Population():
         '''Fonction de croisement de la population : double sa taille'''
         
         l = self._Get_len()
-        impair = 0
         if l%2 == 1:
             extra = (self._Get_pop()).pop()
-            impair = 1
-        for i in range(0, self._Get_len(), 2): #pas de deux, problème de parité d'où extra
-            cut = np.random.randint(0, 16)
-            child1 = {}
-            child2 = {}
-            keys = RotTable._RotTable__KEYS
-            #keys = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
-            for j in keys[:cut]:
-                child1[j] = self._Get_pop()[i][0].getRotTable()[j]
-                child2[j] = self._Get_pop()[i+1][0].getRotTable()[j]
-            for j in keys[cut:]:
-                child1[j] = self._Get_pop()[i][0].getRotTable()[j]
-                child2[j] = self._Get_pop()[i+1][0].getRotTable()[j]
-            self.add_to_pop(RotTable(child1))
-            self.add_to_pop(RotTable(child2))
-        if impair == 1:
+            for i in range(0, self._Get_len()-1, 2): #pas de deux, problème de parité d'où extra
+                cut = np.random.randint(0, 16)
+                child1 = {}
+                child2 = {}
+                keys = RotTable._RotTable__KEYS
+                #keys = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
+                for j in keys[:cut]:
+                    child1[j] = self._Get_pop()[i][0].getRotTable()[j]
+                    child2[j] = self._Get_pop()[i+1][0].getRotTable()[j]
+                for j in keys[cut:]:
+                    child1[j] = self._Get_pop()[i][0].getRotTable()[j]
+                    child2[j] = self._Get_pop()[i+1][0].getRotTable()[j]
+                self.add_to_pop(RotTable(child1))
+                self.add_to_pop(RotTable(child2))
             self.add_to_pop(extra)
+        else:
+            for i in range(0, self._Get_len(), 2): #pas de deux, problème de parité d'où extra
+                cut = np.random.randint(0, 16)
+                child1 = {}
+                child2 = {}
+                keys = RotTable._RotTable__KEYS
+                #keys = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
+                for j in keys[:cut]:
+                    child1[j] = self._Get_pop()[i][0].getRotTable()[j]
+                    child2[j] = self._Get_pop()[i+1][0].getRotTable()[j]
+                for j in keys[cut:]:
+                    child1[j] = self._Get_pop()[i][0].getRotTable()[j]
+                    child2[j] = self._Get_pop()[i+1][0].getRotTable()[j]
+                self.add_to_pop(RotTable(child1))
+                self.add_to_pop(RotTable(child2))
+
     
     def mutate_pop(self):
         ''' Mutation de tous les individus composants notre population '''
@@ -128,7 +140,7 @@ class Population():
         for i in range(n):
             self.next_gen()
             print("Génération :", self._Get_Current_Gen())
-            print("Le meilleur individu a un score de :", self._Get_Current_Best())
+            print("Le meilleur individu a un score de :", self._Get_Current_Best(), "\n")
 
  
             

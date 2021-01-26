@@ -1,7 +1,8 @@
 from RotTable import *
 from Population import *
 from Traj3D import * 
-
+import random as rd 
+rd.seed(0)
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--filename", help="input filename of DNA sequence")
@@ -29,9 +30,14 @@ def main():
         traj.draw("sample.png")
 
 def main_2():
-    iter_max=50
+    iter_max=3
+    
     Pop=Population("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG")
     Pop.evolve(iter_max)
+
+def main_3():
+    Pop=Population("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG")
+    Pop.next_gen()
 
 if __name__ == "__main__" :
     main_2()

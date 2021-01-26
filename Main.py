@@ -1,5 +1,6 @@
 from RotTable import *
-from Traj3D import *
+from Population import *
+from Traj3D import * 
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -20,7 +21,6 @@ def main():
 	    traj.compute(seq, rot_table)
     else:
         traj.compute("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG", rot_table)
-
     print(traj.getTraj())
 
     if args.filename:
@@ -28,6 +28,12 @@ def main():
     else:
         traj.draw("sample.png")
 
+def main_2():
+    iter_max=50
+    Pop=Population("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG")
+    Pop.evolve(iter_max)
 
 if __name__ == "__main__" :
-    main()
+    main_2()
+
+

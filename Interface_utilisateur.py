@@ -19,7 +19,7 @@ nombre_indiv=StringVar()
 Label(main, text= "Nombre de génération").grid(row = 1, column = 0)
 Entry(main,textvariable=nombre_generation).grid(row=1,column=1)
 
-Label(main, text= "Nombre d'individus dans la population'").grid(row = 2, column = 0)
+Label(main, text= "Nombre d'individus dans la population").grid(row = 2, column = 0)
 Entry(main,textvariable=nombre_indiv).grid(row=2,column=1)
 
  
@@ -33,10 +33,9 @@ Label(main, text= "Sélection de la méthode").grid(row = 5, column = 0)
 ttk.Combobox(main,values=["Tournoi","Elitisme"],textvariable=Methode).grid(row=5,column=1)
 
 ######Attention ici changer Command None en lancement des claculs de main.py 
-Button(main,text="Lancer les calculs",command=lambda : Princ.test_draw_traited(filename.get(),Methode.get(),int(nombre_generation.get())) ).grid(row=6, column= 1)
+Button(main,text="Lancer les calculs",command=lambda : Princ.test_draw_traited(filename.get(),Methode.get(),int(nombre_generation.get()),int(nombre_indiv.get())) ).grid(row=6, column= 1)
 
 Button(main,text="Tracer la trajectoire 3D de la molécule initiale",command=lambda : Princ.test_draw_initial_seq(filename.get())).grid(row=7,column=0)
-
 
 Button(main,text="Quitter",command=main.destroy).grid(row=8, column= 2)###création d'un boutton qui entraine la destruction (fermerture) de l'interface
 main.mainloop()

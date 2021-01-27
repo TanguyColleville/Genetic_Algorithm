@@ -48,11 +48,11 @@ def test_draw_initial_seq(file_name):
     print(traj.getTraj())
     traj.draw("sample.png")
 
-def test_draw_traited(file_name,methode_sele,nbiter):
+def test_draw_traited(file_name,methode_sele,nbiter,nbindiv):
     lineList = [line.rstrip('\n') for line in open(file_name)]
     traj=Traj3D()
     seq = ''.join(lineList[1:])
-    Pop=Population(seq,n=100)
+    Pop=Population(seq,n=nbindiv)
     Pop.evolve(nbiter,methode_sele)
     traj.compute(seq,Pop._Get_Current_Best()[0])
     traj.draw("sample.png")

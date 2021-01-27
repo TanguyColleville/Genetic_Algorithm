@@ -116,6 +116,8 @@ class RotTable:
         traj.compute(seq, self.Reconstitution()) # On calcule la trajectoire
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
+
+        # return (extremite_2-extremite_1).length # On retourne le score
         return (extremite_2-extremite_1).length # On retourne le score
         
     def Cross(self, rot_table_2, cut):

@@ -31,7 +31,7 @@ A faire :
 
 
 ## Liens utiles 
-* Miro [ici](https://miro.com/app/board/o9J_lXQ3JWY=/)
+* Miro [ici](https://miro.com/app/board/o9J_lXQ3JWY=/), il permet de mettre exergue la partie organisationnelle de notre projet ainsi que de comprendre la structure de notre code. 
 
 ## Instruction pour installation 
 On commence, pour travailler sur le projet ou le tester, par créer une copie locale avec `git clone https://gitlab-cw2.centralesupelec.fr/tanguy.colleville/jeu_evolutionnaire.git`
@@ -57,11 +57,14 @@ En demeurant dans [NOM VENV] taper pip install -r requirements.txt
 * Readme.md
 * Rapport.md
 * Requirement.txt 
-* Data 
-'* Plasmid_8k'
-'* Plasmid_180k'
-## Utilisation
+* Data\
+`* plasmid_8k.fasta`
+`* plasmid_180k.fasta`
 
+
+## Utilisation
+Lancer le fichier Interface_utilisateur.py. Bien qu'assez userfriendly, aidez vous de notre 
+manuel d'utilisation pour utiliser correctement notre outil. 
 
 ## Références 
 [Real coded genetic algorithms (slides)](https://engineering.purdue.edu/~sudhoff/ee630/Lecture04.pdf)

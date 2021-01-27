@@ -57,7 +57,9 @@ En demeurant dans [NOM VENV] taper pip install -r requirements.txt
 * Readme.md
 * Rapport.md
 * Requirement.txt 
-
+* Data 
+'* Plasmid_8k'
+'* Plasmid_180k'
 ## Utilisation
 
 

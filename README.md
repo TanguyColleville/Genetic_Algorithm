@@ -1,7 +1,9 @@
 # Jeu évolutionnaire EI ST2 théorie des jeux 
 
 ![CentraleSupelec Logo](https://www.centralesupelec.fr/sites/all/themes/cs_theme/medias/common/images/intro/logo_nouveau.jpg)
+<div align=”center”>
 ![Projet Logo](logo_ei.png)
+</div>
 
 On peut trouver le gitlab de notre groupe [ici](https://gitlab-cw2.centralesupelec.fr/tanguy.colleville/jeu_evolutionnaire)
 

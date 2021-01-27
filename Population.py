@@ -4,11 +4,10 @@ from Traj3D import *
 import mathutils
 from operator import itemgetter, attrgetter
 
-
 class Population():
     """Represents the population of rotation tables (individuals)"""
 
-    def __init__(self, seq,n=5):
+    def __init__(self, seq,n=10):
         if type(n) is not int or n<2:
             raise Exception(" n must be an integer greater than 1")
         if type(seq) is not str : 
@@ -80,7 +79,7 @@ class Population():
         self.clear_pop() # On efface l'ancienne population
         for i in range(int(n*coefficient)) : # Et on rajoute les n*coefficients premiers/meilleurs
             self._pop.append(L[i])
-        self.update_current_best(self._pop[0][1]) # Enfin on met à jour le meilleur score
+        self.update_current_best(self._pop[0]) # Enfin on met à jour le meilleur score
 
     def select_tournoi_pop(self):
         '''Fonction de sélection par tournoi de la population'''
@@ -97,7 +96,7 @@ class Population():
         self.clear_pop() # On vide l'ancienne population
         for individu in L: # Et on rajoute tous les vainqueurs
             self._pop.append(individu)
-        self.update_current_best(min(L,key=itemgetter(1))[1]) # On met à jour le meilleur score
+        self.update_current_best(min(L,key=itemgetter(1))) # On met à jour le meilleur score
 
 
     def cross_pop(self): 
@@ -107,7 +106,7 @@ class Population():
         if l%2 == 1: extra = (self._pop).pop() # Si il y a un nombre impair d'individus, on en prélève un
 
         for i in range(0, len(self._pop)-l%2, 2): # On parcourt la population...
-            cut = np.random.randint(0, 16) # ...on tire un indice de coupe au hasard...
+            cut = np.random.randint(0, RotTable._RotTable__NUM_KEYS) # ...on tire un indice de coupe au hasard...
             cross_1, cross_2 = self._pop[i][0].Cross(self._pop[i+1][0],cut) # ...et on effectue le croisement
             self.add_to_pop(cross_1) # ...on ajoute enfin les 2 enfants du croisement
             self.add_to_pop(cross_2)
@@ -125,24 +124,41 @@ class Population():
     # ITERATION DE GENERATIONS #
     ############################ 
 
-    def next_gen(self):
+    def next_gen(self,selection_method):
         ''' Passage à la génération suivante : une itération de la boucle évaluation, sélection, croisement, mutation'''
 
         self.eval_pop()
-        self.select_tournoi_pop()
+        if selection_method == "Elitisme":
+            self.select_elite_pop()
+        elif selection_method == "Tournoi":
+            self.select_tournoi_pop()
+        else:
+            raise Exception(" selection_method must be either 'Elitisme' or 'Tournoi'")
         self.cross_pop()
         self.mutate_pop()
         self.update_current_gen()
 
-    def evolve(self,n):
+    def evolve(self, n, selection_method):
         ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération '''
-        
+        x = []
+        y = []
         for i in range(n-1): # on s'arrête à la génération n-1 pour ne pas renvoyer une pop mutée
-            self.next_gen()
-            print("Le meilleur individu a un score de :", self._current_best, "\n")
+            self.next_gen(selection_method)
+            new_y = self._current_best[1]
+            y.append(new_y)
+            x.append(self._current_gen)
+            print("Le meilleur individu a un score de :", new_y, "\n")
         self.eval_pop() # pour avoir une population dont tous les individus ont un score
         print("Dernière génération :", self._current_gen)
-        print("Le meilleur individu a un score de :", self._current_best, "\n")
+        print("Le meilleur individu a un score de :", self._current_best[1], "\n")
+        y.append(self._current_best[1])
+        x.append(self._current_gen + 1 )
+        fig, ax = plt.subplots()
+        plt.xlabel('Nombre de générations')
+        plt.ylabel('Meilleur score')
+        plt.title('Evolution du meilleur score de la population au fil des générations')
+        plt.plot(x,y,'ro--')
+        plt.show()
  
 
             

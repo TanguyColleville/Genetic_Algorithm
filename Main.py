@@ -1,8 +1,8 @@
 from RotTable import *
 from Population import *
 from Traj3D import * 
-import random as rd 
-rd.seed(0)
+import numpy as np
+np.random.seed(0)
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--filename", help="input filename of DNA sequence")
@@ -30,14 +30,32 @@ def main():
         traj.draw("sample.png")
 
 def main_2():
-    iter_max=10
+    iter_max=100
     
     Pop=Population("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG")
-    Pop.evolve(iter_max)
+    Pop.evolve(iter_max, "Elitisme")
 
 def main_3():
     Pop=Population("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG")
     Pop.next_gen()
+
+def test_draw_initial_seq(file_name):
+    rot_table = RotTable()
+    traj = Traj3D()
+    lineList = [line.rstrip('\n') for line in open(file_name)]
+    seq = ''.join(lineList[1:])
+    traj.compute(seq, rot_table)
+    print(traj.getTraj())
+    traj.draw("sample.png")
+
+def test_draw_traited(file_name,methode_sele,nbiter):
+    lineList = [line.rstrip('\n') for line in open(file_name)]
+    traj=Traj3D()
+    seq = ''.join(lineList[1:])
+    Pop=Population(seq,n=100)
+    Pop.evolve(nbiter,methode_sele)
+    traj.compute(seq,Pop._Get_Current_Best()[0])
+    traj.draw("sample.png")
 
 if __name__ == "__main__" :
     main_2()

@@ -9,6 +9,8 @@ class RotTable:
 
     __KEYS = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
 
+    __NUM_KEYS = 10
+
     __KEYS_UNIQUE = ["AA","AC","AG","AT","TA","TC","TG","CC","CG","GC"]
 
     __ORIGINAL_ROT_TABLE = {
@@ -16,18 +18,12 @@ class RotTable:
         "AC": [34.4, 1.1, 143, 1.3, 5, 0],
         "AG": [27.7, 8.4, 2, 1.5, 3, 0],
         "AT": [31.5, 2.6, 0, 1.1, 2, 0],
-        "CA": [34.5, 3.5, -64, 0.9, 34, 0],
         "CC": [33.67, 2.1, -57, 0.07, 2.1, 0],
         "CG": [29.8, 6.7, 0, 1.1, 1.5, 0],
-        "CT": [27.7, 8.4, -2, 1.5, 3, 0],
-        "GA": [36.9, 5.3, 120, 0.9, 6, 0],
         "GC": [40, 5, 180, 1.2, 1.275, 0],
-        "GG": [33.67, 2.1, 57, 0.07, 2.1, 0],
-        "GT": [34.4, 1.1, -143, 1.3, 5, 0],
         "TA": [36, 0.9, 0, 1.1, 2, 0],
         "TC": [36.9, 5.3, -120, 0.9, 6, 0],
         "TG": [34.5, 3.5, 64, 0.9, 34, 0],
-        "TT": [35.62, 7.2, 154, 0.06, 0.6, 0]
     }
 
     def __init__(self, randomGen=False, rot_dict=None):
@@ -51,13 +47,13 @@ class RotTable:
         return "{}".format(self.__Rot_Table)
     
     def getTwist(self, dinucleotide):
-        return self.__Rot_Table[dinucleotide][0]
+        return self.Reconstitution().getRotTable()[dinucleotide][0]
 
     def getWedge(self, dinucleotide):
-        return self.__Rot_Table[dinucleotide][1]
+        return self.Reconstitution().getRotTable()[dinucleotide][1]
 
     def getDirection(self, dinucleotide):
-        return self.__Rot_Table[dinucleotide][2]
+        return self.Reconstitution().getRotTable()[dinucleotide][2]
 
     def getRotTable(self):
         return self.__Rot_Table
@@ -86,14 +82,14 @@ class RotTable:
 
 
     def Reconstitution(self):
-        ''' Permet de reconstituer la table de rotation complète par symétrie '''
-        table = self.__Rot_Table
-        for dinucle in table:
+        ''' Permet de reconstituer la table de rotation complète par symétrie,, le temps d'évaluer l'individu '''
+        table = self.__Rot_Table.copy()
+        for dinucle in self.__KEYS_UNIQUE:
             if self.Symetrique(dinucle) != dinucle:
                 table[self.Symetrique(dinucle)] = []
                 for i in range(len(table[dinucle])):
                     table[self.Symetrique(dinucle)].append(table[dinucle][i]) if i != 3 else table[self.Symetrique(dinucle)].append(-table[dinucle][i])
-        #return table
+        return RotTable(rot_dict=table)
     
     def Mutate(self,gen):
         if np.random.randint(0,1000)<10: # chance d'apparition d'une mutation
@@ -117,7 +113,7 @@ class RotTable:
         if type(seq) is not str : 
             raise Exception(" seq must be a string which represents dinucleotides")
         traj = Traj3D()
-        traj.compute(seq, self) # On calcule la trajectoire
+        traj.compute(seq, self.Reconstitution()) # On calcule la trajectoire
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
         return (extremite_2-extremite_1).length # On retourne le score
@@ -127,11 +123,11 @@ class RotTable:
         if not isinstance(rot_table_2, RotTable): 
             raise Exception("rot_table_2 should be a RotTable instance")
         
-        if not (type(cut) is int and cut in range(16)):
+        if not (type(cut) is int and cut in range(self.__NUM_KEYS)):
             raise Exception("cut should be an integer and between 0 and 16")
         child1 = {}
         child2 = {}
-        keys = self.__KEYS
+        keys = self.__KEYS_UNIQUE
         for j in keys[:cut]:
             child1[j] = self.getRotTable()[j]
             child2[j] = rot_table_2.getRotTable()[j]

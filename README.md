@@ -7,12 +7,20 @@ Ce qu'on a accompli :
 - [x] MVP : sélection élitiste, croisement en un point, pas de mutation
 - [x] Mutations bruit gaussien
 - [x] Rester dans les bornes (mutation et génération aléatoire)
+- [x] Symétrie 
+- [x] Selection --> tournoi ou elitisme 
+- [x] Interface utilisateur stylée
 
-A faire cet aprem : 
+A faire : 
 
-- [ ] Selection --> tournoi ou elitisme 
 - [ ] Test et couverture des nouvelles méthodes 
-- [ ] Symétrie 
+- [ ] Ajouter bouton interface taille population
+- [ ] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule) :)
+- [ ] Tester le meilleur entre tournoi et élitisme avec plusieurs seeds
+- [ ] Optimiser pour ne jamais muter le meilleur ; modifier tournoi (% chance gagner même si moins bon score SAUF face au meilleur) ? pour plus de diversité ; croisement en deux points ?
+- [ ] (Autres sélections ? roulette, rang)
+- [ ] mutation auto-adaptative ? facile à implémenter +-
+- [ ] changer évalutation prendre orientation des extrémités en compte (produit scalaire)
 
 
 ## Membres : 
@@ -23,6 +31,8 @@ A faire cet aprem :
 
 
 ## Liens utiles 
+* Miro [ici](https://miro.com/app/board/o9J_lXQ3JWY=/)
+
 ## Instruction pour installation 
 On commence, pour travailler sur le projet ou le tester, par créer une copie locale avec `git clone https://gitlab-cw2.centralesupelec.fr/tanguy.colleville/jeu_evolutionnaire.git`
 Ensuite, afin d'importer les modules nécessaires pour faire fonctionner correctement les programmes, il faut, dans une console Python, taper la requête " pip install -r requirements.txt " et simplement appuyer sur "entrée".
@@ -40,7 +50,6 @@ Activer l’environnement :
 En demeurant dans [NOM VENV] taper pip install -r requirements.txt
 
 ## Structure 
-
 
 ## Utilisation
 

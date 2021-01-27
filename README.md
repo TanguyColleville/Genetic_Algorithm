@@ -10,12 +10,12 @@ Ce qu'on a accompli :
 - [x] Symétrie 
 - [x] Selection --> tournoi ou elitisme 
 - [x] Interface utilisateur stylée
+- [x] Ajouter bouton interface taille population
+- [x] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule) :)
 
 A faire : 
 
 - [ ] Test et couverture des nouvelles méthodes 
-- [ ] Ajouter bouton interface taille population
-- [ ] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule) :)
 - [ ] Tester le meilleur entre tournoi et élitisme avec plusieurs seeds
 - [ ] Optimiser pour ne jamais muter le meilleur ; modifier tournoi (% chance gagner même si moins bon score SAUF face au meilleur) ? pour plus de diversité ; croisement en deux points ?
 - [ ] (Autres sélections ? roulette, rang)

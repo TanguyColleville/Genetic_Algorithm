@@ -50,6 +50,13 @@ Activer l’environnement :
 En demeurant dans [NOM VENV] taper pip install -r requirements.txt
 
 ## Structure 
+* Main.py
+* Population.py
+* RotTable.py
+* Traj3D.py
+* Readme.md
+* Rapport.md
+* Requirement.txt 
 
 ## Utilisation
 

@@ -9,6 +9,8 @@ class RotTable:
 
     __KEYS = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
 
+    __KEYS_UNIQUE = ["AA","AC","AG","AT","TA","TC","TG","CC","CG","GC"]
+
     __ORIGINAL_ROT_TABLE = {
         "AA": [35.62, 7.2, -154, 0.06, 0.6, 0],
         "AC": [34.4, 1.1, 143, 1.3, 5, 0],
@@ -32,13 +34,15 @@ class RotTable:
         if rot_dict is None:
             self.__Rot_Table = {}
             for dinucleotide in RotTable.__ORIGINAL_ROT_TABLE:
-                self.__Rot_Table[dinucleotide] = RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][:3]
-            if randomGen:
-                for dinucleotide in RotTable.__ORIGINAL_ROT_TABLE:
-                    self.__Rot_Table[dinucleotide] = np.random.randint(
-                        -180, 180)*np.random.randn(3)
+                self.__Rot_Table[dinucleotide] = []
+                for i in range(3):
+                    self.__Rot_Table[dinucleotide].append(RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][i])
+                    self.__Rot_Table[dinucleotide][i] += np.random.uniform(-1,1)*RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][i+3] if randomGen else 0 ### on initialise en ajoutant une valeur alétoire avec une loi qui respecte les contraintes d'intervalles
         else:
-            self.__Rot_Table = rot_dict
+            if type(rot_dict)==dict :
+                self.__Rot_Table = rot_dict
+            else : 
+                raise Exception("Type of rot_dict is not correct, you should give a dictionnary")
 
     ###################
     # READING METHODS #
@@ -62,17 +66,78 @@ class RotTable:
     # WRITING METHODS #
     ###################
     
-    def Encodage(self):
-        pass
+    def Correspondance(self, nucle):
+        ''' Associe à chaque nucléotide son symétrique : A et T, C et G '''
+        if nucle == 'A':
+            return 'T'
+        elif nucle == 'T':
+            return 'A'
+        elif nucle == 'C':
+            return 'G'
+        elif nucle == 'G':
+            return 'C'
     
-    def Mutate(self):
-        pass
+    def Symetrique(self, dinucle):
+        ''' Associe à chaque dinucléotide son symétrique grâce à Correspondace '''
+        sym = ''
+        sym += self.Correspondance(dinucle[1])
+        sym += self.Correspondance(dinucle[0])
+        return sym
+
+
+    def Reconstitution(self):
+        ''' Permet de reconstituer la table de rotation complète par symétrie '''
+        table = self.__Rot_Table
+        for dinucle in table:
+            if self.Symetrique(dinucle) != dinucle:
+                table[self.Symetrique(dinucle)] = []
+                for i in range(len(table[dinucle])):
+                    table[self.Symetrique(dinucle)].append(table[dinucle][i]) if i != 3 else table[self.Symetrique(dinucle)].append(-table[dinucle][i])
+        #return table
+    
+    def Mutate(self,gen):
+        if np.random.randint(0,1000)<10: # chance d'apparition d'une mutation
+            dinucle = np.random.choice(list(self.__Rot_Table.keys()))
+            angle = np.random.randint(0,3)# on modifie un angle au hasard parmi les 3
+            delta = self.__ORIGINAL_ROT_TABLE[dinucle][angle+3] # on récupère la variance de l'angle 
+            moyenne = self.__ORIGINAL_ROT_TABLE[dinucle][angle] # on récupère la valeur moyenne de l'angle 
+
+            var = np.random.normal(0,10)*delta/math.log(gen+10) # réduire l'écart type au fil des générations
+            if np.random.choice([True, False]):
+                future = self.__Rot_Table[dinucle][angle] - var
+                borne = moyenne - delta
+                self.__Rot_Table[dinucle][angle] = future if future > borne else borne
+            else:
+                future = self.__Rot_Table[dinucle][angle] + var
+                borne = moyenne + delta
+                self.__Rot_Table[dinucle][angle] = future if future < borne else borne
+            
     
     def Evaluation(self, seq):
+        if type(seq) is not str : 
+            raise Exception(" seq must be a string which represents dinucleotides")
         traj = Traj3D()
         traj.compute(seq, self) # On calcule la trajectoire
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
         return (extremite_2-extremite_1).length # On retourne le score
+        
+    def Cross(self, rot_table_2, cut):
+        '''Fonction de croisement de 2 individus'''
+        if not isinstance(rot_table_2, RotTable): 
+            raise Exception("rot_table_2 should be a RotTable instance")
+        
+        if not (type(cut) is int and cut in range(16)):
+            raise Exception("cut should be an integer and between 0 and 16")
+        child1 = {}
+        child2 = {}
+        keys = self.__KEYS
+        for j in keys[:cut]:
+            child1[j] = self.getRotTable()[j]
+            child2[j] = rot_table_2.getRotTable()[j]
+        for j in keys[cut:]:
+            child1[j] = self.getRotTable()[j]
+            child2[j] = rot_table_2.getRotTable()[j]
+        return (RotTable(child1),RotTable(child2))
 
     ###################

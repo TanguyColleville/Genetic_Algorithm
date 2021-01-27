@@ -30,7 +30,7 @@ def main():
         traj.draw("sample.png")
 
 def main_2():
-    iter_max=3
+    iter_max=10
     
     Pop=Population("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG")
     Pop.evolve(iter_max)

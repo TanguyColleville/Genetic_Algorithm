@@ -1,5 +1,7 @@
 # Jeu évolutionnaire EI ST2 théorie des jeux 
 
+![CentraleSupelec Logo](https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.wikipedia.org%2Fwiki%2FFichier%3ALogo_CentraleSup%25C3%25A9lec.svg&psig=AOvVaw3dPO0RNF9pNfI1b1HLgx6q&ust=1611863645070000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCMif3pLyvO4CFQAAAAAdAAAAABAD)
+
 On peut trouver le gitlab de notre groupe [ici](https://gitlab-cw2.centralesupelec.fr/tanguy.colleville/jeu_evolutionnaire)
 
 Ce qu'on a accompli :
@@ -68,4 +70,5 @@ manuel d'utilisation pour utiliser correctement notre outil.
 
 ## Références 
 [Real coded genetic algorithms (slides)](https://engineering.purdue.edu/~sudhoff/ee630/Lecture04.pdf)
+[Algorithmes génétiques de Jean-Marc Alliot & Nicolas Durand](http://pom.tls.cena.fr/GA/FAG/ag.html)
 

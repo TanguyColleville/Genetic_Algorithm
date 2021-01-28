@@ -112,7 +112,7 @@ class Population():
             i2 = np.random.randint(0,n-1) # On tire un 2e nombre au hasard...
             j2 = remaining.pop(i2) # ...qui nous donnent l'indice d'un autre individu à faire combattre
             score1 = self._pop[j1][1]
-            score2 = self._pop[j2][2]
+            score2 = self._pop[j2][1]
             diff = score1 - score2
             if diff < 0:
                 proba = (1 - (-diff/score2)**puissance)*luck_prob
@@ -188,8 +188,8 @@ class Population():
             self.select_tournoi_pop(luck_prob, puissance)
         else:
             raise Exception(" selection_method must be either 'Elitisme' or 'Tournoi'")
-        self.cross_pop()
         self.sort_pop_and_update_best()
+        self.cross_pop()
         self.mutate_pop(alpha)
         self.update_current_gen()
 

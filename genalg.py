@@ -1,0 +1,13 @@
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("mode", type=str, choices=['evolution', 'display'], help="Working mode of the program")
+parser.add_argument("DNA_sequence", type=str, help="Filename of the DNA sequence to work with")
+parser.add_argument("-ni","--number_of_individuals", type=int, default=10, help="Number of individuals in the initial population")
+parser.add_argument("-ng","--number_of_generation", type=int, default=10, help="Number of generations to go through")
+parser.add_argument("-sel","--selection_method", type=str, choices=['Elitisme', 'Tournoi'], default='Tournoi', help="Selection method to be used by the algorithm")
+parser.add_argument("--scaling", action="store_true", help="Specify in order to use evaluation with scaling")
+parser.add_argument("-a","--alpha", type=float, default=0.59, help="Probability of mutation for each individual")
+parser.add_argument("-l","--luck", type=float, default=0.7, help="Only relevent when using 'Tournoi' selection. Used to weight the probability of a loser being selected.")
+parser.add_argument("-p","--power", type=int, default=2, help="Only relevent when using 'Tournoi' selection. Increasing this number will lead in increased influence of the luck (-l) parameter in the calculation that determines the probability of a loser being selected.")
+parser.parse_args()
+args = parser.parse_args()

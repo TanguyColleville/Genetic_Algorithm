@@ -60,8 +60,8 @@ def test_draw_traited(file_name,methode_sele,nbiter,nbindiv):
 def main_4():
     lineList = [line.rstrip('\n') for line in open("./Data/plasmid_8k.fasta")]
     seq = ''.join(lineList[1:])
-    pop_size = 100
-    nb_gen = 20
+    pop_size = 10
+    nb_gen = 5
 
     pop = Population(seq,pop_size)
     pop.evolve(nb_gen, "Tournoi", True, alpha=0.593879313130056)

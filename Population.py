@@ -73,7 +73,10 @@ class Population():
         Nécessite N le nombre de génération total prévu '''
         p = 0.1
         n = self._current_gen
-        k = (np.tan((n+1/(N+1))*np.pi/2))**p
+        if n==0:
+            k = (np.tan((n+1/(N+1))*np.pi/2))**p
+        else:
+            k = (np.tan((n/(N+1))*np.pi/2))**p
         # k commence proche de 0 donc lisse les scores, puis augmente en passant par 1 ;
         # plus N est grand, plus k augmente, à terme ; pour N à 1000000, k vaut environ 3 à la dernière génération
         for individu in self._pop:

@@ -82,10 +82,10 @@ class RotTable:
 
 
     def Reconstitution(self):
-        ''' Permet de reconstituer la table de rotation complète par symétrie,, le temps d'évaluer l'individu '''
+        ''' Permet de reconstituer la table de rotation complète par symétrie, le temps d'évaluer l'individu '''
         table = self.__Rot_Table.copy()
         for dinucle in self.__KEYS_UNIQUE:
-            if self.Symetrique(dinucle) != dinucle:
+            if self.Symetrique(dinucle) not in self.__Rot_Table.keys():
                 table[self.Symetrique(dinucle)] = []
                 for i in range(len(table[dinucle])):
                     table[self.Symetrique(dinucle)].append(table[dinucle][i]) if i != 3 else table[self.Symetrique(dinucle)].append(-table[dinucle][i])

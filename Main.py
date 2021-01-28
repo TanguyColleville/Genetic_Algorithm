@@ -45,7 +45,6 @@ def test_draw_initial_seq(file_name):
     lineList = [line.rstrip('\n') for line in open(file_name)]
     seq = ''.join(lineList[1:])
     traj.compute(seq, rot_table)
-    print(traj.getTraj())
     traj.draw("sample.png")
 
 def test_draw_traited(file_name,methode_sele,nbiter,nbindiv):
@@ -64,7 +63,7 @@ def main_4():
     nb_gen = 5
 
     pop = Population(seq,pop_size)
-    pop.evolve(nb_gen, "Tournoi", True, alpha=0.593879313130056)
+    pop.evolve(nb_gen, "Tournoi", scaling=True, alpha=0.593879313130056)
     best = pop._Get_Current_Best()
     print("Meilleur score obtenu de",best[1],"avec l'individu :\n")
     print(best[0])

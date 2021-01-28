@@ -114,17 +114,17 @@ class Population():
         if l%2 == 1: self.add_to_pop(extra[0]) # Si il y avait un nombre impair d'individus, on rajoute l'individu prélever initialement
 
     
-    def mutate_pop(self):
+    def mutate_pop(self, alpha=0.01):
         ''' Mutation de tous les individus composant notre population '''
 
         for indiv in self._pop: # On parcourt la population...
-            indiv[0].Mutate(self._current_gen) # ...et on fait muter chaque individu (avec une certaine probabilité, cf méthode Mutate de la classe RotTable)
+            indiv[0].Mutate(self._current_gen,alpha) # ...et on fait muter chaque individu (avec une certaine probabilité, cf méthode Mutate de la classe RotTable)
 
     ############################
     # ITERATION DE GENERATIONS #
     ############################ 
 
-    def next_gen(self,selection_method):
+    def next_gen(self,selection_method, alpha=0.01):
         ''' Passage à la génération suivante : une itération de la boucle évaluation, sélection, croisement, mutation'''
 
         self.eval_pop()
@@ -135,10 +135,19 @@ class Population():
         else:
             raise Exception(" selection_method must be either 'Elitisme' or 'Tournoi'")
         self.cross_pop()
-        self.mutate_pop()
+        self.mutate_pop(alpha)
         self.update_current_gen()
 
-    def evolve(self, n, selection_method):
+    def evolve(self, n, selection_method, alpha=0.01):
+        ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération '''
+
+        for i in range(n-1): # on s'arrête à la génération n-1 pour ne pas renvoyer une pop mutée
+            self.next_gen(selection_method, alpha)
+
+        self.eval_pop() # pour avoir une population dont tous les individus ont un score
+        self.update_current_best(min(self._pop, key=itemgetter(1)))
+
+    def evolve_and_graph(self, n, selection_method):
         ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération '''
         x = []
         y = []
@@ -149,6 +158,7 @@ class Population():
             x.append(self._current_gen)
             print("Le meilleur individu a un score de :", new_y, "\n")
         self.eval_pop() # pour avoir une population dont tous les individus ont un score
+        self.update_current_best(min(self._pop, key=itemgetter(1)))
         print("Dernière génération :", self._current_gen)
         print("Le meilleur individu a un score de :", self._current_best[1], "\n")
         y.append(self._current_best[1])

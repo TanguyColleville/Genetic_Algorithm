@@ -19,14 +19,14 @@ Ce qu'on a accompli :
 - [x] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule) 
 
 A faire : 
-
+- [ ] Benchmarks : sélection, évaluation, luck_prob, alpha, pertinence réduire var dans mutate
 - [ ] Test et couverture des nouvelles méthodes 
 - [ ] Tester le meilleur entre tournoi et élitisme avec plusieurs seeds
-- [ ] Optimiser pour ne jamais muter le meilleur ; modifier tournoi (% chance gagner même si moins bon score SAUF face au meilleur) ? pour plus de diversité ; croisement en deux points ?
+- [x] Optimiser pour ne jamais muter le meilleur ; modifier tournoi (% chance gagner même si moins bon score SAUF face au meilleur) ? pour plus de diversité ; croisement en deux points ?
 - [ ] (Autres sélections ? roulette, rang)
 - [ ] mutation auto-adaptative ? facile à implémenter +-
 - [ ] changer évalutation prendre orientation des extrémités en compte (produit scalaire)
-
+- [x] évaluation avec scaling
 
 ## Membres : 
 * Antony Perzo 

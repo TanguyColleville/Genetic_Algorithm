@@ -2,3 +2,6 @@ __pycache__
 *.pyc
 sample.png
 .DS_Store
+.coverage
+htmlcov/
+*.zip

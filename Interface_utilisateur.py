@@ -30,6 +30,7 @@ Button(main,text='Ouvrir',command=lambda:filename.set(askopenfilename())).grid(r
 
 Methode= StringVar(main)
 Label(main, text= "Sélection de la méthode").grid(row = 5, column = 0)
+
 ttk.Combobox(main,values=["Tournoi","Elitisme"],textvariable=Methode).grid(row=5,column=1)
 
 ######Attention ici changer Command None en lancement des claculs de main.py 

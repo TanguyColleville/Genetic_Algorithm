@@ -91,10 +91,10 @@ class RotTable:
                     table[self.Symetrique(dinucle)].append(table[dinucle][i]) if i != 3 else table[self.Symetrique(dinucle)].append(-table[dinucle][i])
         return RotTable(rot_dict=table)
     
-    def Mutate(self,gen,alpha=0.01):
+    def Mutate(self,gen,alpha):
         if np.random.random()<alpha: # chance d'apparition d'une mutation
             dinucle = np.random.choice(list(self.__Rot_Table.keys()))
-            angle = np.random.randint(0,3)# on modifie un angle au hasard parmi les 3
+            angle = np.random.randint(0,3) # on modifie un angle au hasard parmi les 3
             delta = self.__ORIGINAL_ROT_TABLE[dinucle][angle+3] # on récupère la variance de l'angle 
             moyenne = self.__ORIGINAL_ROT_TABLE[dinucle][angle] # on récupère la valeur moyenne de l'angle 
 

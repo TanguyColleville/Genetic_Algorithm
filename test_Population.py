@@ -1,4 +1,5 @@
 from Population import Population
+import pytest
 
 table = {
         "AA": [35.62, 7.2, -154, 0.06, 0.6, 0],
@@ -21,12 +22,26 @@ table = {
     
 seq = "AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG"
 
+###################
+# TEST ASSESSEURS #
+################### 
+
+def test_init():
+    with pytest.raises(Exception(" seq must be a string which represents dinucleotides")):
+        pop = Population(5)
+    with pytest.raises(Exception(" n must be an integer greater than 1")):
+        pop = Population(seq, n=0)
+
 def test_assesseurs():
     pop = Population(seq, n=10)
     assert pop._Get_seq() == seq
     assert pop._Get_len() == 10
     assert pop._Get_Current_Gen() == 0
     assert pop._Get_Current_Best() is None
+
+######################
+# TEST MODIFICATEURS #
+###################### 
 
 def test_add_to_pop():
     pop = Population(seq)
@@ -63,6 +78,27 @@ def test_update_current_best():
     pop.update_current_best(42)
     assert pop._Get_Current_Best() == 42 
 
+def test_sort_pop_and_update_best():
+    pop = Population(seq)
+    pop.eval_pop()
+    pop.sort_pop_and_update_best()
+    assert pop._Get_pop() == sorted(pop._Get_pop(), key=itemgetter(1))
+    assert pop._Get_Current_Best() is not None
+
+    #############################
+    # TEST FONCTIONS EVOLUTIVES #
+    ############################# 
+
+def test_eval_pop_scaling():
+    pop = Population(seq)
+    N = 5
+    score = pop.eval_pop()
+    pop.eval_pop_scaling(N)
+    # pour n + 1 = 1 et N = 5, on a normalement k entre 0.876 et 0.877 (problème de stockage float, pas de test == )
+    assert type(pop._Get_pop()[0][1]) is float
+    assert pop._Get_pop()[0][1] < score**0.877 and score**0.876 < pop._Get_pop()[0][1] 
+
+
 def test_eval_pop():
     pop = Population(seq)
     pop.eval_pop()
@@ -93,7 +129,13 @@ def test_cross_pop():
 
 def test_mutate_pop(): 
     pop=Population(seq,n=5)
-    pass
+    pop.eval_pop()
+    pop.sort_pop_and_update_best()
+    initial_best_score = pop._Get_Current_Best()[1]
+    pop.mutate_pop(0.59)
+    best_score_after_mutation = pop._Get_Current_Best()[1]
+    assert best_score_after_mutation >= initial_best_score
+    
     
 def test_next_gen():
     pop = Population(seq)
@@ -104,8 +146,11 @@ def test_next_gen():
 def test_evolve():
     pop = Population(seq)
     initialGen = pop._Get_Current_Gen()
-    pop.evolve(5)
-    assert pop._Get_Current_Gen() == initialGen + 4
+    pop.evolve(3)
+    assert pop._Get_Current_Gen() == initialGen + 2
+    pop = Population(seq)
+    initialGen = pop._Get_Current_Gen()
+    pop.evolve(3)
 
     
         

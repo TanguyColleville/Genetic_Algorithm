@@ -10,7 +10,7 @@ main.title("Algorithme génétique")### titre de la fenêtre
 
 ch=r"logo_ei.PNG"
 render = ImageTk.PhotoImage(Image.open(os.path.join(ch)))
-Label(image=render).grid(sticky="n")
+Label(image=render).grid(columnspan=3)
 
 
 nombre_generation=StringVar()

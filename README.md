@@ -16,7 +16,7 @@ Ce qu'on a accompli :
 - [x] Selection --> tournoi ou elitisme 
 - [x] Interface utilisateur stylée
 - [x] Ajouter bouton interface taille population
-- [x] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule) :)
+- [x] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule) 
 
 A faire : 
 
@@ -57,6 +57,26 @@ En demeurant dans [NOM VENV] taper pip install -r requirements.txt
 ## Structure 
 * Main.py
 * Population.py
+* RotTable.py
+* Traj3D.py
+* Readme.md
+* Rapport.md
+* Requirement.txt 
+* Data\
+`* plasmid_8k.fasta`
+`* plasmid_180k.fasta`
+
+
+## Utilisation
+Lancer le fichier Interface_utilisateur.py. Bien qu'assez userfriendly, aidez vous de notre 
+manuel d'utilisation pour utiliser correctement notre outil. 
+
+## Références 
+[Real coded genetic algorithms (slides)](https://engineering.purdue.edu/~sudhoff/ee630/Lecture04.pdf)
+[Algorithmes génétiques de Jean-Marc Alliot & Nicolas Durand](http://pom.tls.cena.fr/GA/FAG/ag.html)
+[Thèse sur les jeux évolutionnaires](https://tel.archives-ouvertes.fr/tel-02085935/document)
+
+
 * RotTable.py
 * Traj3D.py
 * Readme.md

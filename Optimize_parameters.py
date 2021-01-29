@@ -15,7 +15,7 @@ def best_score_given_mutation_probability(alpha):
     return pop._Get_Current_Best()[1]
 
 
-# res = minimize_scalar(best_score_given_mutation_probability, bounds=(0, 1), method='bounded')
+res = minimize_scalar(best_score_given_mutation_probability, bounds=(0, 1), method='bounded')
 
 if res.success:
     print("Minimum trouvé !\n")

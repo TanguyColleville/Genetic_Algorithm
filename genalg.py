@@ -29,7 +29,6 @@ def display_seq_from_file(seq, rot_table_file):
         rot_table_object = RotTable()
     else:
         rot_table_object = RotTable(rot_dict=pickle.load(open(rot_table_file, "rb" )))
-
     traj = Traj3D()
     traj.compute(seq, rot_table_object.Reconstitution())
     traj.draw("sample.png")

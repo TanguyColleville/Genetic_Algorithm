@@ -52,18 +52,18 @@ def test_draw_traited(file_name,methode_sele,nbiter,nbindiv):
     traj=Traj3D()
     seq = ''.join(lineList[1:])
     Pop=Population(seq,n=nbindiv)
-    Pop.evolve(nbiter,methode_sele)
+    Pop.evolve(nbiter, selection_method=methode_sele)
     traj.compute(seq,Pop._Get_Current_Best()[0])
     traj.draw("sample.png")
 
 def main_4():
     lineList = [line.rstrip('\n') for line in open("./Data/plasmid_8k.fasta")]
     seq = ''.join(lineList[1:])
-    pop_size = 10
-    nb_gen = 5
+    pop_size = 5000
+    nb_gen = 2
 
     pop = Population(seq,pop_size)
-    pop.evolve(nb_gen, "Tournoi", scaling=True, alpha=0.593879313130056)
+    pop.evolve(nb_gen, "Tournoi", scaling=False, alpha=0.593879313130056)
     best = pop._Get_Current_Best()
     print("Meilleur score obtenu de",best[1],"avec l'individu :\n")
     print(best[0])

@@ -27,10 +27,10 @@ seq = "AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGG
 ################### 
 
 def test_init():
-    with pytest.raises(Exception(" seq must be a string which represents dinucleotides")):
-        pop = Population(5)
-    with pytest.raises(Exception(" n must be an integer greater than 1")):
-        pop = Population(seq, n=0)
+    with pytest.raises(Exception):
+        Population(5)
+    with pytest.raises(Exception):
+        Population(seq, n=0)
 
 def test_assesseurs():
     pop = Population(seq, n=10)
@@ -56,6 +56,8 @@ def test_del_from_pop():
     pop.add_to_pop(table, 2)
     pop.del_from_pop(-1)
     assert pop._Get_pop()[-1] == [table, 1]
+    with pytest.raises(Exception):
+        pop.del_from_pop('b')
 
 def test_update_current_gen():
     pop = Population(seq)
@@ -67,6 +69,8 @@ def test_set_pop():
     pop = Population(seq)
     pop.set_pop([1,2,3])
     assert pop._Get_pop() == [1,2,3]
+    with pytest.raises(Exception):
+        pop.set_pop(4)
 
 def test_clear_pop():
     pop = Population(seq)
@@ -76,33 +80,27 @@ def test_clear_pop():
 def test_update_current_best():
     pop = Population(seq)
     pop.update_current_best(42)
-    assert pop._Get_Current_Best() == 42 
-
-def test_sort_pop_and_update_best():
-    pop = Population(seq)
-    pop.eval_pop()
-    pop.sort_pop_and_update_best()
-    assert pop._Get_pop() == sorted(pop._Get_pop(), key=itemgetter(1))
-    assert pop._Get_Current_Best() is not None
+    assert pop._Get_Current_Best() == 42
 
     #############################
     # TEST FONCTIONS EVOLUTIVES #
     ############################# 
 
 def test_eval_pop_scaling():
-    pop = Population(seq)
+    pop = Population(seq, n=3)
     N = 5
-    score = pop.eval_pop()
     pop.eval_pop_scaling(N)
-    # pour n + 1 = 1 et N = 5, on a normalement k entre 0.876 et 0.877 (problème de stockage float, pas de test == )
-    assert type(pop._Get_pop()[0][1]) is float
-    assert pop._Get_pop()[0][1] < score**0.877 and score**0.876 < pop._Get_pop()[0][1] 
+    for i in range(3):
+        assert isinstance(pop._Get_pop()[i][1], float)
+    with pytest.raises(Exception):
+        pop.eval_pop_scaling('a')
 
 
 def test_eval_pop():
-    pop = Population(seq)
+    pop = Population(seq,n=3)
     pop.eval_pop()
-    assert type(pop._Get_pop()[0][1]) is float
+    for i in range(3):
+        assert isinstance(pop._Get_pop()[i][1], float)
 
 def test_select_elite_pop():
     pop=Population(seq,n=10)
@@ -116,7 +114,7 @@ def test_select_tournoi_pop():
     pop=Population(seq,n=10)
     Ini_len=len(pop._Get_pop())
     pop.eval_pop()
-    pop.select_tournoi_pop()
+    pop.select_tournoi_pop(0.5,2)
     Post_len=len(pop._Get_pop())
     assert int(Ini_len*0.5)==int(Post_len)
     
@@ -130,17 +128,19 @@ def test_cross_pop():
 def test_mutate_pop(): 
     pop=Population(seq,n=5)
     pop.eval_pop()
-    pop.sort_pop_and_update_best()
     initial_best_score = pop._Get_Current_Best()[1]
     pop.mutate_pop(0.59)
     best_score_after_mutation = pop._Get_Current_Best()[1]
     assert best_score_after_mutation >= initial_best_score
     
+    ##############################
+    # TEST NOUVELLES GENERATIONS #
+    ##############################
     
 def test_next_gen():
     pop = Population(seq)
     initialGen = pop._Get_Current_Gen()
-    pop.next_gen()
+    pop.next_gen(0,False,"Tournoi", 0.59, 0.5, 2)
     assert pop._Get_Current_Gen() == initialGen + 1
 
 def test_evolve():
@@ -151,6 +151,14 @@ def test_evolve():
     pop = Population(seq)
     initialGen = pop._Get_Current_Gen()
     pop.evolve(3)
+    
+def test_evolve_with_step():
+    pop=Population(seq)
+    initialGen = pop._Get_Current_Gen()
+    C = pop.evolve_with_step(10,2)
+    assert pop._Get_Current_Gen()==initialGen + 9
+    assert len(C) == 5
+    
 
     
         

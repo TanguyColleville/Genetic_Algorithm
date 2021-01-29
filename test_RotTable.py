@@ -44,12 +44,14 @@ def test_getDirection():
 def test_getRotTable():
     rot=RotTable()
     assert type(rot.getRotTable()) is dict
-    assert len(rot.getRotTable())==16
+    assert len(rot.getRotTable())==10
 
-def test_Encodage():
-    pass
+
 def test_Mutate():
     rot=RotTable()
+    initial_rot_dict=rot.getRotTable().copy()
+    rot.Mutate(0)
+    assert initial_rot_dict != rot.getRotTable()
     
 
 def test_evaluation():
@@ -71,5 +73,5 @@ def test_symetrique():
 def test_reconstitution():
     rot = RotTable()
     l = len(rot.getRotTable())
-    rot.Reconstitution()
-    assert l != len(rot.getRotTable())
+    n = len(rot.Reconstitution().getRotTable())
+    assert l != n

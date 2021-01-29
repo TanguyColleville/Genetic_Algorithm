@@ -63,5 +63,7 @@ class Traj3D:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.plot(x,y,z)
+        ax.plot(x[0],y[0],z[0],color="red",marker="o",markersize=10)
+        ax.plot(x[-1],y[-1],z[-1],color="red",marker="o",markersize=10)
         plt.show()
         plt.savefig(filename)

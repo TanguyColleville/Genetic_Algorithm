@@ -16,17 +16,19 @@ Ce qu'on a accompli :
 - [x] Selection --> tournoi ou elitisme 
 - [x] Interface utilisateur stylée
 - [x] Ajouter bouton interface taille population
-- [x] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule) 
+- [x] Ajouter bouton trajectoire 3D FINALE (ou le mettre dès qu'on calcule)
+- [x] Optimiser pour ne jamais muter le meilleur ; modifier tournoi (% chance gagner même si moins bon score SAUF face au meilleur)
+- [x] évaluation avec scaling
+- [x] Bloquer --> calcul si y'a pas de séquence et obliger les fichiers fasta 
+- [x] Généraliser les vérifications des entrées des méthodes avec des raise exeception
+- [x] Test et couverture des nouvelles méthodes 
+- [x] changer mutate : au lieu de parcourir la liste, prendre un nb aléatoire pour nb mutations puis choisir nb mutations alétoires
 
 A faire : 
+
 - [ ] Benchmarks : sélection, évaluation, luck_prob, alpha, pertinence réduire var dans mutate
-- [ ] Test et couverture des nouvelles méthodes 
-- [ ] Tester le meilleur entre tournoi et élitisme avec plusieurs seeds
-- [x] Optimiser pour ne jamais muter le meilleur ; modifier tournoi (% chance gagner même si moins bon score SAUF face au meilleur) ? pour plus de diversité ; croisement en deux points ?
-- [ ] (Autres sélections ? roulette, rang)
-- [ ] mutation auto-adaptative ? facile à implémenter +-
-- [ ] changer évalutation prendre orientation des extrémités en compte (produit scalaire)
-- [x] évaluation avec scaling
+- [ ] changer évalutation prendre orientation des extrémités en compte (produit scalaire) et normes
+- [ ] établir plan du diapo 
 
 ## Membres : 
 * Antony Perzo 
@@ -65,6 +67,7 @@ En demeurant dans [NOM VENV] taper pip install -r requirements.txt
 * Data\
 `* plasmid_8k.fasta`
 `* plasmid_180k.fasta`
+* Output\ 
 
 
 ## Utilisation
@@ -75,23 +78,4 @@ manuel d'utilisation pour utiliser correctement notre outil.
 [Real coded genetic algorithms (slides)](https://engineering.purdue.edu/~sudhoff/ee630/Lecture04.pdf)
 [Algorithmes génétiques de Jean-Marc Alliot & Nicolas Durand](http://pom.tls.cena.fr/GA/FAG/ag.html)
 [Thèse sur les jeux évolutionnaires](https://tel.archives-ouvertes.fr/tel-02085935/document)
-
-
-* RotTable.py
-* Traj3D.py
-* Readme.md
-* Rapport.md
-* Requirement.txt 
-* Data\
-`* plasmid_8k.fasta`
-`* plasmid_180k.fasta`
-
-
-## Utilisation
-Lancer le fichier Interface_utilisateur.py. Bien qu'assez userfriendly, aidez vous de notre 
-manuel d'utilisation pour utiliser correctement notre outil. 
-
-## Références 
-[Real coded genetic algorithms (slides)](https://engineering.purdue.edu/~sudhoff/ee630/Lecture04.pdf)
-[Algorithmes génétiques de Jean-Marc Alliot & Nicolas Durand](http://pom.tls.cena.fr/GA/FAG/ag.html)
 

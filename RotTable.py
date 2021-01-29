@@ -25,6 +25,17 @@ class RotTable:
         "TC": [36.9, 5.3, -120, 0.9, 6, 0],
         "TG": [34.5, 3.5, 64, 0.9, 34, 0],
     }
+    __BORNES = {
+        'AA': [[35.56, 35.68], [6.65, 7.8]],
+        'AC': [[33.1, 35.7], [-3.9, 6.1]], 
+        'AG': [[26.2, 29.2], [5.4, 11.4]], 
+        'AT': [[30.4, 32.6], [0.6, 4.6]], 
+        'CC': [[33.6, 33.74], [0.0, 4.2]], 
+        'CG': [[28.7, 30.9], [5.2, 8.2]], 
+        'GC': [[38.8, 41.2], [3.725, 6.275]], 
+        'TA': [[34.9, 37.1], [-1.1, 2.9]], 
+        'TC': [[36.0, 37.8], [-0.7, 11.3]], 
+        'TG': [[33.6, 35.4], [-30.5, 37.5]]}
 
     def __init__(self, randomGen=False, rot_dict=None):
         if rot_dict is None:
@@ -91,25 +102,28 @@ class RotTable:
                     table[self.Symetrique(dinucle)].append(table[dinucle][i]) if i != 3 else table[self.Symetrique(dinucle)].append(-table[dinucle][i])
         return RotTable(rot_dict=table)
     
-    def Mutate(self,gen,alpha):
-        if np.random.random()<alpha: # chance d'apparition d'une mutation
-            dinucle = np.random.choice(list(self.__Rot_Table.keys()))
-            angle = np.random.randint(0,3) # on modifie un angle au hasard parmi les 3
-            delta = self.__ORIGINAL_ROT_TABLE[dinucle][angle+3] # on récupère la variance de l'angle 
-            moyenne = self.__ORIGINAL_ROT_TABLE[dinucle][angle] # on récupère la valeur moyenne de l'angle 
+    def Mutate(self, gen):
+        if not (type(gen) is int):
+            raise Exception("gen must be an integer which represents the current generation")
+        dinucle = np.random.choice(list(self.__Rot_Table.keys()))
+        angle = np.random.randint(0,2) # on modifie un angle au hasard parmi ceux qu'on peut modifier (que deux choix)
+        delta = self.__ORIGINAL_ROT_TABLE[dinucle][angle+3] # on récupère la variance de l'angle 
+        #moyenne = self.__ORIGINAL_ROT_TABLE[dinucle][angle] # on récupère la valeur moyenne de l'angle 
 
-            var = np.random.normal(0,10)*delta/math.log(gen+10) # réduire l'écart type au fil des générations
-            if np.random.choice([True, False]):
-                future = self.__Rot_Table[dinucle][angle] - var
-                borne = moyenne - delta
-                self.__Rot_Table[dinucle][angle] = future if future > borne else borne
-            else:
-                future = self.__Rot_Table[dinucle][angle] + var
-                borne = moyenne + delta
-                self.__Rot_Table[dinucle][angle] = future if future < borne else borne
+        var = np.random.normal(0,10)*delta/math.log(gen+10) # réduire l'écart type au fil des générations
+        if np.random.choice([True, False]):
+            future = self.__Rot_Table[dinucle][angle] - var
+            #borne = moyenne - delta
+            borne = self.__BORNES[dinucle][angle][0]
+            self.__Rot_Table[dinucle][angle] = future if future > borne else borne
+        else:
+            future = self.__Rot_Table[dinucle][angle] + var
+            #borne = moyenne + delta
+            borne = self.__BORNES[dinucle][angle][1]
+            self.__Rot_Table[dinucle][angle] = future if future < borne else borne
             
     
-    def Evaluation(self, seq):
+    def Evaluation1(self, seq):
         if type(seq) is not str : 
             raise Exception(" seq must be a string which represents dinucleotides")
         traj = Traj3D()
@@ -117,7 +131,21 @@ class RotTable:
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
         return (extremite_2-extremite_1).length # On retourne le score
-        
+    
+    def Evaluation(self,seq):
+        if type(seq) is not str : 
+            raise Exception(" seq must be a string which represents dinucleotides")
+        traj = Traj3D()
+        traj.compute(seq, self.Reconstitution()) # On calcule la trajectoire
+        extremite_1 = traj.getTraj()[0]
+        extremite_2 = traj.getTraj()[-1]
+        norme_1=(sum([extremite_1[i]**2 for i in range(len(extremite_1))]))**0.5
+        norme_2=(sum([extremite_2[i]**2 for i in range(len(extremite_1))]))**0.5
+        norme1_norme2=norme_1*norme_2
+        ps_1_2=sum([x * y for x, y in zip(extremite_1, extremite_2)])
+        costheta=abs(ps_1_2/norme1_norme2)
+        return costheta
+
     def Cross(self, rot_table_2, cut):
         '''Fonction de croisement de 2 individus'''
         if not isinstance(rot_table_2, RotTable): 

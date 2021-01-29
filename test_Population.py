@@ -77,10 +77,10 @@ def test_clear_pop():
     pop.clear_pop()
     assert pop._Get_pop() == []
 
-def test_update_current_best():
+def test_update_current_best_index():
     pop = Population(seq)
-    pop.update_current_best(42)
-    assert pop._Get_Current_Best() == 42
+    pop.update_current_best_index(42)
+    assert pop._Get_Current_Best_Index() == 42
 
     #############################
     # TEST FONCTIONS EVOLUTIVES #
@@ -131,7 +131,7 @@ def test_mutate_pop():
     initial_best_score = pop._Get_Current_Best()[1]
     pop.mutate_pop(0.59)
     best_score_after_mutation = pop._Get_Current_Best()[1]
-    assert best_score_after_mutation >= initial_best_score
+    assert best_score_after_mutation <= initial_best_score
     
     ##############################
     # TEST NOUVELLES GENERATIONS #

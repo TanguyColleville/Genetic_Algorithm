@@ -131,12 +131,12 @@ class RotTable:
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
         norme_1=(sum([extremite_1[i]**2 for i in range(len(extremite_1))]))**0.5
-        norme_2=(sum([extremite_2[i]**2 for i in range(len(extremite_1))]))**0.5
+        norme_2=(sum([extremite_2[i]**2 for i in range(len(extremite_2))]))**0.5
         norme1_norme2=norme_1*norme_2
         ps_1_2=sum([x * y for x, y in zip(extremite_1, extremite_2)])
         costheta=abs(ps_1_2/norme1_norme2)
         distance=(extremite_2-extremite_1).length
-        return abs(costheta/np.pi )+distance/len(seq)
+        return abs(costheta)+distance/len(seq)*1000
 
     def Cross(self, rot_table_2, cut):
         '''Fonction de croisement de 2 individus'''

@@ -8,14 +8,14 @@ class Population():
     """Represents the population of rotation tables (individuals)"""
 
     def __init__(self, seq,n=10):
-        if type(n) is not int or n<2:
-            raise Exception(" n must be an integer greater than 1")
+        if type(n) is not int or n<3:
+            raise Exception(" n must be an integer greater than 2")
         if type(seq) is not str :
             raise Exception(" seq must be a string which represents dinucleotides")
         self._pop = []  # Liste d'invididus i.e. [rot_table, score]
         self._current_gen = 0 # Génération courante
         self._seq = seq  # Séquence à l'étude
-        self._current_best_index = None # Meilleur score à la génération courante
+        self._current_best_index = 0 # Meilleur score à la génération courante
         for e in range(n):
             self.add_to_pop(RotTable(randomGen=True), None) # On ajoute à la population un individu généré aléatoirement avec un score à None par défaut
     
@@ -36,7 +36,7 @@ class Population():
         return self._current_gen
     
     def _Get_Current_Best(self):
-        return self._pop[self._current_best_index]
+        return None if self._current_best_index is None else self._pop[self._current_best_index]
 
     def _Get_Current_Best_Index(self):
         return self._current_best_index
@@ -90,7 +90,7 @@ class Population():
 
     def eval_pop(self):
         ''' Attribue un score à chaque individu de la population '''
-        current_best_score = math.inf
+        current_best_score = (math.inf if self._pop[self._current_best_index][1] is None else self._pop[self._current_best_index][1])
         best_indiv_index = 0
         for i in range(len(self._pop)): # On parcourt la population...
             score = self._pop[i][0].Evaluation(self._seq)
@@ -107,9 +107,10 @@ class Population():
         L = sorted(self._pop, key=itemgetter(1)) # On récupère la liste de la population triée par scores
         n = len(self._pop)
         self.clear_pop() # On efface l'ancienne population
-        for i in range(int(n*coefficient)) : # Et on rajoute les n*coefficients premiers/meilleurs
+        for i in range(1,int(n*coefficient)) : # Et on rajoute les n*coefficients premiers/meilleurs
             self._pop.append(L[i])
-        self.update_current_best_index(0)
+        self._pop.append(L[0])
+        self.update_current_best_index(len(self._pop)-1)
 
     def select_tournoi_pop(self, luck_prob, puissance):
         '''Fonction de sélection par tournoi de la population ; il y a une probabilité que le plus faible des combattants 
@@ -122,7 +123,8 @@ class Population():
             raise Exception("Luck_prob should be a float value between 0 and 1")
         if not type(puissance)==int : 
             raise Exception("Puissance should be an integer")
-        L = [self._pop.pop(self._current_best_index)] # Tableau des vainqueurs
+        best_individu = self._pop.pop(self._current_best_index)
+        L = [] # Tableau des vainqueurs
         n = len(self._pop)  # Taille de la population
         remaining = [i for i in range(n)] # Liste des indices des individus n'ayant pas encore combattu
         while n>1:
@@ -150,14 +152,19 @@ class Population():
         self.clear_pop() # On vide l'ancienne population
         for individu in L: # Et on rajoute tous les vainqueurs
             self._pop.append(individu)
-        self.update_current_best_index(0)
+        self._pop.append(best_individu)
+        self.update_current_best_index(len(self._pop)-1)
 
 
     def cross_pop(self): 
         '''Fonction de croisement de la population : double sa taille'''
         
         l = len(self._pop)
-        if l%2 == 1: extra = (self._pop).pop() # Si il y a un nombre impair d'individus, on en prélève un
+        if l%2 == 1: # Si il y a un nombre impair d'individus, on en prélève un (mais pas le meilleur)
+            best_individu = (self._pop).pop()
+            extra_individu = (self._pop).pop()
+            self._pop.append(best_individu)
+            self.update_current_best_index(len(self._pop)-1)
 
         for i in range(0, len(self._pop)-l%2, 2): # On parcourt la population...
             cut = np.random.randint(0, RotTable._RotTable__NUM_KEYS) # ...on tire un indice de coupe au hasard...
@@ -165,7 +172,7 @@ class Population():
             self.add_to_pop(cross_1) # ...on ajoute enfin les 2 enfants du croisement
             self.add_to_pop(cross_2)
 
-        if l%2 == 1: self.add_to_pop(extra[0]) # Si il y avait un nombre impair d'individus, on rajoute l'individu prélever initialement
+        if l%2 == 1: self._pop.append(extra_individu) # Si il y avait un nombre impair d'individus, on rajoute l'individu prélevé initialement
     
     def mutate_pop(self, alpha):
         ''' Mutation de tous les individus composant notre population avec une probabilité alpha (par défaut 0.01 tel que 
@@ -173,7 +180,7 @@ class Population():
         dégradante. '''
         if not type(alpha)==float and (alpha>1 or alpha<0) : 
             raise Exception("alpha should be a float value between 0 and 1")
-        best = self._pop.pop(0) # On prélève le meilleur
+        best = self._pop.pop() # On prélève le meilleur
         mutate_best = RotTable(rot_dict=best[0].getRotTable()) # et on le duplique
         mutate_best.Mutate(self._current_gen) # On fait muter la copie du meilleur (de manière certaine)
         mutate_best_eval = mutate_best.Evaluation(self._seq) # et on calcule son score
@@ -189,7 +196,7 @@ class Population():
             self._pop.append([mutate_best,mutate_best_eval]) # ...on l'ajoute à la population
         else:
             self._pop.append(best) # Sinon on rajoute le meilleur 
-        self.update_current_best_index(-1)
+        self.update_current_best_index(len(self._pop)-1)
 
     ############################
     # ITERATION DE GENERATIONS #
@@ -231,6 +238,18 @@ class Population():
         for i in range(n-1): # on s'arrête à la génération n-1 pour ne pas renvoyer une pop mutée
             self.next_gen(n, scaling, selection_method, alpha, luck_prob, puissance)
         self.eval_pop() # pour avoir une population dont tous les individus ont un score
+
+    def evolve_verbose(self, n, scaling = False, selection_method = "Tournoi", alpha=0.59, luck_prob=0, puissance=2):
+        ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération. Ce sont ses paramètres qui déterminent ceux de toutes
+        les autres fonctions évolutionnaires utilisées car c'est la fonction qu'on appelle dans main.'''
+        print(type(scaling))
+        for i in range(n-1): # on s'arrête à la génération n-1 pour ne pas renvoyer une pop mutée
+            self.next_gen(n, scaling, selection_method, alpha, luck_prob, puissance)
+            print(self._current_best_index)
+            print(self._pop)
+        self.eval_pop() # pour avoir une population dont tous les individus ont un score
+        print(self._current_best_index)
+        print(self._pop)
     
     def evolve_with_step(self, n, step, scaling = False, alpha=0.59,  selection_method = "Tournoi", luck_prob=0, puissance=2):
         ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération. Ce sont ses paramètres qui déterminent ceux de toutes
@@ -245,12 +264,12 @@ class Population():
                 C.append(self._pop[self._current_best_index][1])
         return C
 
-    def evolve_and_graph(self, n, selection_method = "Tournoi"):
+    def evolve_and_graph(self, n, scaling = False, alpha=0.59,  selection_method = "Tournoi", luck_prob=0, puissance=2):
         ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération '''
         x = []
         y = []
         for i in range(n-1): # on s'arrête à la génération n-1 pour ne pas renvoyer une pop mutée
-            self.next_gen(selection_method)
+            self.next_gen(n, scaling, selection_method, alpha, luck_prob, puissance)
             new_y = self._pop[self._current_best_index][1]
             y.append(new_y)
             x.append(self._current_gen)

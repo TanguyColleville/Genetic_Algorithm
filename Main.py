@@ -47,26 +47,35 @@ def test_draw_initial_seq(file_name):
     traj.compute(seq, rot_table)
     traj.draw("sample.png")
 
-def test_draw_traited(file_name,methode_sele,nbiter,nbindiv):
+def test_draw_traited(file_name,scaling, methode_sele,nbiter,nbindiv,Luck,Puiss):
     lineList = [line.rstrip('\n') for line in open(file_name)]
     traj=Traj3D()
     seq = ''.join(lineList[1:])
     Pop=Population(seq,n=nbindiv)
-    Pop.evolve(nbiter, selection_method=methode_sele)
+    Pop.evolve(nbiter,scaling=scaling, selection_method=methode_sele,luck_prob=Luck,puissance=Puiss)
     traj.compute(seq,Pop._Get_Current_Best()[0])
     traj.draw("sample.png")
+
+def test_draw_traited_2(file_name,methode_sele,nbiter,nbindiv):
+    lineList = [line.rstrip('\n') for line in open(file_name)]
+    seq = ''.join(lineList[1:])
+    Pop=Population(seq,n=nbindiv)
+    Pop.evolve(nbiter, selection_method=methode_sele)
+    traj=Traj3D()
+    traj.compute(seq,Pop._Get_Current_Best()[0])
+    return traj
 
 def main_4():
     lineList = [line.rstrip('\n') for line in open("./Data/plasmid_8k.fasta")]
     seq = ''.join(lineList[1:])
-    pop_size = 5000
-    nb_gen = 2
+    pop_size = 5
+    nb_gen = 4
 
     pop = Population(seq,pop_size)
-    pop.evolve(nb_gen, "Tournoi", scaling=False, alpha=0.593879313130056)
-    best = pop._Get_Current_Best()
-    print("Meilleur score obtenu de",best[1],"avec l'individu :\n")
-    print(best[0])
+    pop.evolve_verbose(nb_gen, selection_method="Tournoi", alpha=0.593879313130056)
+    #best = pop._Get_Current_Best()
+    #print("Meilleur score obtenu de",best[1],"avec l'individu :\n")
+    #print(best[0])
 
 def draw_seq():
     rot_table = {'AA': [35.60831497330928, 7.300914398651058, -154.0], 'AC': [35.02399069084545, 2.666893442212051, 143.0], 'AG': [26.2, 8.994736694729562, 2.0], 'AT': [26.08456146107297, 7.648153845528422, 0.0], 'CC': [33.70967753141159, 0.9148954541563099, -57.0], 'CG': [30.820267576802113, 5.397768853723985, 0], 'GC': [39.355615833563824, 4.617189422112741, 180.0], 'TA': [35.93130323359519, -0.23199257503017134, 0.0], 'TC': [37.6615370686879, 10.949138895925273, -120.0], 'TG': [34.817713024996905, 82.349600699326, 64.0]}

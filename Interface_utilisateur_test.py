@@ -5,6 +5,8 @@ from PIL import Image,ImageTk
 import os 
 import Main as Princ
 
+import concurrent.futures
+
 main = Tk()###création d'une fenêtre vide qui s'appelle main 
 main.title("Algorithme génétique")### titre de la fenêtre
 
@@ -12,14 +14,20 @@ def switchButtonState():
     Button_calculus['state']="normal"
     Button_init['state']="normal"
 
+def calc_thread(file_name,methode_sele,nbiter,nbindiv):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future = executor.submit(Princ.test_draw_traited_2,file_name,methode_sele,nbiter,nbindiv)
+        traj = future.result()
+        traj.draw("sample.png")
+    
 
 ch=r"logo_ei.PNG"
 render = ImageTk.PhotoImage(Image.open(os.path.join(ch)))
 Label(image=render).grid(columnspan=3)
 
 
-nombre_generation=StringVar(main,value="100")
-nombre_indiv=StringVar(main,value="500")
+nombre_generation=StringVar(main,value="2")
+nombre_indiv=StringVar(main,value="4")
 
 Label(main, text= "Nombre de génération").grid(row = 1, column = 0)
 Entry(main,textvariable=nombre_generation).grid(row=1,column=1)
@@ -42,21 +50,11 @@ Combo.current(0)
 Combo.grid(row=5,column=1)
 
 
-Scalvar=StringVar(main,value=False)
-Checkbutton(main,text="Scaling",variable=Scalvar,onvalue=True,offvalue=False).grid(row=6,column=0)
 
-Luckvar=StringVar(main,value=0)
-Label(main,text="Entrer une valeur de probabilité (float)").grid(row=7,column=0)
-Entry(main, textvariable=Luckvar,state='normal').grid(row=7,column=1)
+Button_calculus=Button(main,text="Lancer les calculs",command=lambda : calc_thread(filename.get(),Methode.get(),int(nombre_generation.get()),int(nombre_indiv.get())),state='disabled' )
+Button_calculus.grid(row=6, column= 1)
 
-Puissvar=StringVar(main,value=2)
-Label(main,text="Entrer une valeur de puissance (int)").grid(row=8,column=0)
-Entry(main, textvariable=Puissvar,state='normal').grid(row=8,column=1)
-
-######Attention ici changer Command None en lancement des claculs de main.py 
-Button_calculus=Button(main,text="Lancer les calculs",command=lambda : Princ.test_draw_traited(filename.get(),bool(Scalvar.get()),Methode.get(),int(nombre_generation.get()),int(nombre_indiv.get()),float(Luckvar.get()),int(Puissvar.get())),state='disabled' )
-Button_calculus.grid(row=10, column= 1)
 Button_init=Button(main,text="Tracer la trajectoire 3D de la molécule initiale",command=lambda : Princ.test_draw_initial_seq(filename.get()),state='disabled')
-Button_init.grid(row=10,column=0)
-Button(main,text="Quitter",command=main.destroy).grid(row=12, column= 2)###création d'un boutton qui entraine la destruction (fermerture) de l'interface
+Button_init.grid(row=7,column=0)
+Button(main,text="Quitter",command=main.destroy).grid(row=8, column= 2)###création d'un boutton qui entraine la destruction (fermerture) de l'interface
 main.mainloop()

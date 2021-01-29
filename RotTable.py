@@ -123,15 +123,6 @@ class RotTable:
             self.__Rot_Table[dinucle][angle] = future if future < borne else borne
             
     
-    def Evaluation1(self, seq):
-        if type(seq) is not str : 
-            raise Exception(" seq must be a string which represents dinucleotides")
-        traj = Traj3D()
-        traj.compute(seq, self.Reconstitution()) # On calcule la trajectoire
-        extremite_1 = traj.getTraj()[0]
-        extremite_2 = traj.getTraj()[-1]
-        return (extremite_2-extremite_1).length # On retourne le score
-    
     def Evaluation(self,seq):
         if type(seq) is not str : 
             raise Exception(" seq must be a string which represents dinucleotides")
@@ -144,7 +135,8 @@ class RotTable:
         norme1_norme2=norme_1*norme_2
         ps_1_2=sum([x * y for x, y in zip(extremite_1, extremite_2)])
         costheta=abs(ps_1_2/norme1_norme2)
-        return costheta
+        distance=(extremite_2-extremite_1).length
+        return abs(costheta/np.pi )+distance/len(seq)
 
     def Cross(self, rot_table_2, cut):
         '''Fonction de croisement de 2 individus'''

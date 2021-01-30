@@ -122,7 +122,7 @@ class RotTable:
             return 'C'
 
     def Symetrique(self, dinucle):
-        ''' Associe à chaque dinucléotide son symétrique grâce à Correspondace '''
+        ''' Associe à chaque dinucléotide son symétrique grâce à Correspondance '''
         sym = ''
         sym += self.Correspondance(dinucle[1])
         sym += self.Correspondance(dinucle[0])

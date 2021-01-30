@@ -12,8 +12,8 @@ seq = ''.join(lineList[1:])
 
 
 def best_score(nbindiv, nbgen, methode="Tournoi", alpha=0.59):
-    """ Permet de calculer le score du meilleur individu de la population pour une méthode à partir d'un nombre d'individu
-     et d'un nombre de génération """
+    """ Permet de calculer le score du meilleur individu de la population pour une méthode donnée
+    à partir d'un nombre d'individu et d'un nombre de génération """
     pop = Population(seq, nbindiv)
     pop.evolve(nbgen, methode, alpha=alpha)
     return pop._Get_Current_Best()[1]

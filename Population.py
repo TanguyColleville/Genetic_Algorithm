@@ -6,6 +6,7 @@ import pickle
 
 from RotTable import RotTable
 from Traj3D import *
+import copy
 
 
 class Population():
@@ -221,7 +222,7 @@ class Population():
             raise Exception("alpha should be a float value between 0 and 1")
         best = self._pop.pop()  # On prélève le meilleur
         mutate_best = RotTable(
-            rot_dict=best[0].getRotTable().copy())  # et on le duplique
+            rot_dict=copy.deepcopy(best[0].getRotTable()))  # et on le duplique
         # On fait muter la copie du meilleur (de manière certaine)
         mutate_best.Mutate(self._current_gen)
         mutate_best_eval = mutate_best.Evaluation(
@@ -282,15 +283,7 @@ class Population():
         else:
             raise Exception(
                 " selection_method must be either 'Elitisme' or 'Tournoi'")
-        print(self._pop[self._current_best_index][1],
-              self._pop[self._current_best_index][0], '\n')
-        print(self._pop[-2][1], self._pop[-1][0], '\n')
-        print(self._pop[-3][1], self._pop[-2][0], '\n\n')
         self.mutate_pop(alpha)
-        print(self._pop[self._current_best_index][1],
-              self._pop[self._current_best_index][0], '\n')
-        print(self._pop[-2][1], self._pop[-1][0], '\n')
-        print(self._pop[-3][1], self._pop[-2][0], '\n\n\n\n\n')
         self.cross_pop()
         self.update_current_gen()
 
@@ -316,33 +309,6 @@ class Population():
                 puissance)
         self.eval_pop()  # pour avoir une population dont tous les individus ont un score
 
-    def evolve_verbose(
-            self,
-            n,
-            scaling=False,
-            selection_method="Tournoi",
-            alpha=0.59,
-            luck_prob=0,
-            puissance=2):
-        ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération. Ce sont ses paramètres qui déterminent ceux de toutes
-        les autres fonctions évolutionnaires utilisées car c'est la fonction qu'on appelle dans main.'''
-        print(type(scaling))
-        for i in range(
-                n - 1):  # on s'arrête à la génération n-1 pour ne pas renvoyer une pop mutée
-            self.next_gen(
-                n,
-                scaling,
-                selection_method,
-                alpha,
-                luck_prob,
-                puissance)
-            print(self._current_best_index)
-            print(self._pop)
-        pickle.dump(self, open("Output/pop_avant_eval.p", "wb"))
-        self.eval_pop()  # pour avoir une population dont tous les individus ont un score
-        pickle.dump(self, open("Output/pop_apres_eval.p", "wb"))
-        print(self._current_best_index)
-        print(self._pop)
 
     def evolve_with_step(
             self,

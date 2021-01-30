@@ -7,6 +7,9 @@ import numpy as np
 from Traj3D import *
 
 
+import copy
+
+
 class RotTable:
     """Represents the rotation table"""
 
@@ -216,11 +219,11 @@ class RotTable:
         child2 = {}
         keys = self.__KEYS_UNIQUE
         for j in keys[:cut]:
-            child1[j] = self.getRotTable()[j].copy()
-            child2[j] = rot_table_2.getRotTable()[j].copy()
+            child1[j] = copy.copy(self.getRotTable()[j])
+            child2[j] = copy.copy(rot_table_2.getRotTable()[j])
         for j in keys[cut:]:
-            child1[j] = self.getRotTable()[j].copy()
-            child2[j] = rot_table_2.getRotTable()[j].copy()
+            child1[j] = copy.copy(self.getRotTable()[j])
+            child2[j] = copy.copy(rot_table_2.getRotTable()[j])
         return (RotTable(child1), RotTable(child2))
 
     ###################

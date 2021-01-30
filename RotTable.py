@@ -146,7 +146,7 @@ class RotTable:
                             dinucle)].append(-table[dinucle][i])
         return RotTable(rot_dict=table)
 
-    def Mutate(self, gen):
+    def Mutate(self, gen, adapt_var):
         """ Permet le mutation d'un individu """
         if not (isinstance(gen, int)):
             raise Exception(
@@ -160,8 +160,10 @@ class RotTable:
         # moyenne = self.__ORIGINAL_ROT_TABLE[dinucle][angle] # on récupère la
         # valeur moyenne de l'angle
 
-        # réduire l'écart type au fil des générations
-        var = np.random.normal(0, 10) * delta / math.log(gen + 10)
+        if adapt_var: # réduire l'amplitude des variations au fil des générations
+            var = np.random.normal(0, 10) * delta / math.log(gen + 10)
+        else:
+            var = np.random.normal(0, 10) * delta
         if np.random.choice([True, False]):
             future = self.__Rot_Table[dinucle][angle] - var
             #borne = moyenne - delta

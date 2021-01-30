@@ -214,7 +214,7 @@ class Population():
             # prélevé initialement
             self._pop.append(extra_individu)
 
-    def mutate_pop(self, alpha):
+    def mutate_pop(self, alpha, adapt_var):
         ''' Mutation de tous les individus composant notre population avec une probabilité alpha (par défaut 0.01 tel que
         déterminé dans evolve) SAUF le meilleur individu qui n'est jamais muté si cette mutation est a posteriori
         dégradante. '''
@@ -224,7 +224,7 @@ class Population():
         mutate_best = RotTable(
             rot_dict=copy.deepcopy(best[0].getRotTable()))  # et on le duplique
         # On fait muter la copie du meilleur (de manière certaine)
-        mutate_best.Mutate(self._current_gen)
+        mutate_best.Mutate(self._current_gen, adapt_var)
         mutate_best_eval = mutate_best.Evaluation(
             self._seq, self._iniD)  # et on calcule son score
 
@@ -236,7 +236,7 @@ class Population():
 
         for i in individuals_to_mutate:  # On parcourt les indices des individus à muter...
             # ...et on fait muter chaque individu correspondant
-            self._pop[i][0].Mutate(self._current_gen)
+            self._pop[i][0].Mutate(self._current_gen, adapt_var)
 
         # Si la mutation du meilleur est encore meilleure...
         if mutate_best_eval < best[1]:
@@ -257,7 +257,8 @@ class Population():
             selection_method,
             alpha,
             luck_prob,
-            puissance):
+            puissance,
+            adapt_var):
         ''' Passage à la génération suivante : une itération de la boucle évaluation, sélection, croisement, mutation
         On peut choisir
         - la méthode de sélection choisie entre tournoi et élitisme avec selection_method = "Tournoi" par défaut
@@ -283,7 +284,7 @@ class Population():
         else:
             raise Exception(
                 " selection_method must be either 'Elitisme' or 'Tournoi'")
-        self.mutate_pop(alpha)
+        self.mutate_pop(alpha, adapt_var)
         self.cross_pop()
         self.update_current_gen()
 
@@ -294,7 +295,8 @@ class Population():
             selection_method="Tournoi",
             alpha=0.59,
             luck_prob=0,
-            puissance=2):
+            puissance=2,
+            adapt_var=True):
         ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération. Ce sont ses paramètres qui déterminent ceux de toutes
         les autres fonctions évolutionnaires utilisées car c'est la fonction qu'on appelle dans main.'''
 
@@ -306,7 +308,8 @@ class Population():
                 selection_method,
                 alpha,
                 luck_prob,
-                puissance)
+                puissance,
+                adapt_var)
         self.eval_pop()  # pour avoir une population dont tous les individus ont un score
 
 
@@ -318,7 +321,8 @@ class Population():
             alpha=0.59,
             selection_method="Tournoi",
             luck_prob=0,
-            puissance=2):
+            puissance=2,
+            adapt_var=True):
         ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération. Ce sont ses paramètres qui déterminent ceux de toutes
         les autres fonctions évolutionnaires utilisées car c'est la fonction qu'on appelle dans main.'''
         C = []
@@ -330,7 +334,8 @@ class Population():
                 selection_method,
                 alpha,
                 luck_prob,
-                puissance)
+                puissance,
+                adapt_var)
             if i % step == 0:
                 C.append(self._pop[self._current_best_index][1])
         self.eval_pop()  # pour avoir une population dont tous les individus ont un score
@@ -345,7 +350,8 @@ class Population():
             alpha=0.59,
             selection_method="Tournoi",
             luck_prob=0,
-            puissance=2):
+            puissance=2,
+            adapt_var=True):
         ''' Exécute l'algo génétique en s'arrêtant à la n-1e génération et trace le graphe de convergence  '''
         x = []
         y = []
@@ -357,7 +363,8 @@ class Population():
                 selection_method,
                 alpha,
                 luck_prob,
-                puissance)
+                puissance,
+                adapt_var)
             new_y = self._pop[self._current_best_index][1]
             y.append(new_y)
             x.append(self._current_gen)

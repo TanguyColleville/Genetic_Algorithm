@@ -2,6 +2,7 @@ import argparse
 
 
 from Population import *
+from Population_sandbox import *
 from RotTable import *
 from Traj3D import *
 
@@ -152,7 +153,13 @@ def draw_seq():
     traj.compute(seq, RotTable(rot_dict=rot_table).Reconstitution())
     traj.draw("sample.png")
 
+def main_sandbox():
+    lineList = [line.rstrip('\n') for line in open("./Data/plasmid_8k.fasta")]
+    seq = ''.join(lineList[1:])
+    pop = Population_sandbox(seq,n=100)
+    pop.evolve_double_graph(300)
+
 
 if __name__ == "__main__":
     # draw_seq()
-    main_6()
+    main_sandbox()

@@ -5,3 +5,4 @@ sample.png
 .coverage
 htmlcov/
 *.zip
+.vscode/

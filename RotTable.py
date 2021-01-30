@@ -146,6 +146,10 @@ class RotTable:
                             dinucle)].append(-table[dinucle][i])
         return RotTable(rot_dict=table)
 
+        ###################
+        # UTILS EVOLUTIVES #
+        ###################
+    
     def Mutate(self, gen, adapt_var):
         """ Permet le mutation d'un individu """
         if not (isinstance(gen, int)):
@@ -175,7 +179,7 @@ class RotTable:
             borne = self.__BORNES[dinucle][angle][1]
             self.__Rot_Table[dinucle][angle] = future if future < borne else borne
 
-    def Evaluation1(self, seq, ini_D):
+    def Evaluation(self, seq, ini_D):
         """Fonction d'évaluation plus poussé qui vise à minimiser la norme ainsi que l'angle du vecteur entre les deux points extrêmes """
         if not isinstance(seq, str):
             raise Exception(
@@ -192,14 +196,14 @@ class RotTable:
         norme1_norme2 = norme_1 * norme_2
         ps_1_2 = sum([x * y for x, y in zip(extremite_1, extremite_2)])
         # cos theta = u.v/(norme(u)*norme(v))
-        costheta = abs(ps_1_2 / norme1_norme2)
+        costheta = ps_1_2 / norme1_norme2
         distance = (extremite_2 - extremite_1).length
         # 1-abs(costheta) afin de converger vers une valeur nulle
         # IniD représente la longueur du brain lorsqu'on utlise la table
         # d'angle de référence
         return (1 - abs(costheta) + distance / ini_D) * 1000
 
-    def Evaluation(self, seq, ini_D):
+    def Evaluation1(self, seq, ini_D):
         """Fonction d'évaluation primaire pour "simplement" minimiser la distance entre les extrémités """
         if not isinstance(seq, str):
             raise Exception(
@@ -209,6 +213,29 @@ class RotTable:
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
         return (extremite_2 - extremite_1).length
+
+    def Evaluation2(self, seq):
+        """Fonction d'évaluation plus poussé qui vise à minimiser la norme ainsi que l'angle du vecteur entre les deux points extrêmes """
+        if not isinstance(seq, str):
+            raise Exception(
+                " seq must be a string which represents dinucleotides")
+        traj = Traj3D()
+        traj.compute(seq, self.Reconstitution())  # On calcule la trajectoire
+        extremite_1 = traj.getTraj()[0]
+        extremite_2 = traj.getTraj()[-1]
+        norme_1 = (
+            sum([extremite_1[i]**2 for i in range(len(extremite_1))]))**0.5
+        norme_2 = (
+            sum([extremite_2[i]**2 for i in range(len(extremite_2))]))**0.5
+        norme1_norme2 = norme_1 * norme_2
+        ps_1_2 = sum([x * y for x, y in zip(extremite_1, extremite_2)])
+        # cos theta = u.v/(norme(u)*norme(v))
+        costheta = abs(ps_1_2 / norme1_norme2)
+        distance = (extremite_2 - extremite_1).length
+        # 1-abs(costheta) afin de converger vers une valeur nulle
+        # IniD représente la longueur du brain lorsqu'on utlise la table
+        # d'angle de référence
+        return (distance, costheta)
 
     def Cross(self, rot_table_2, cut):
         '''Fonction de croisement de 2 individus'''

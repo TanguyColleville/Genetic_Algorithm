@@ -23,18 +23,27 @@ Ce qu'on a accompli :
 - [x] Généraliser les vérifications des entrées des méthodes avec des raise exeception
 - [x] Test et couverture des nouvelles méthodes 
 - [x] changer mutate : au lieu de parcourir la liste, prendre un nb aléatoire pour nb mutations puis choisir nb mutations alétoires
-
+- [x] établir plan du diapo 
 A faire : 
 
 - [ ] Benchmarks : sélection, évaluation, luck_prob, alpha, pertinence réduire var dans mutate
-- [ ] changer évalutation prendre orientation des extrémités en compte (produit scalaire) et normes
-- [ ] établir plan du diapo 
+- [ ] changer évalutation prendre orientation des extrémités en compte (produit scalaire) et normes 
+- [ ] Améliorations pour la présentation : pédagogie (audience novice) ; diagrammes de classe (POO) ; passer vite sur l'organisation ; être très didactique (convaincre et justifier nos choix !) ; éviter de montrer du code ; avoir des bonnes données à montrer (gros plans sur la jointure)
+- [ ] Utiliser un couple d'évaluation avec 2 best à chaque génération ; on ne modifie un individu que s'il est moins bon sur les deux critères
+- [ ] reprendre tous les codes, commenter proprement et virer les commentaires inutiles : 
+Done : Bench.py Interface utilisateur .py 
+- [ ]    ordonner correctement tous les modules selon la règle suivante : 
+block 1 : Import des modules présents dans python de base 
+block 2 : Import de module non présent de base dans python i.e. ceux qu'on a du pip install 
+block 3 : Import de fichiers propre à notre projet, ex import Traj3D
+les modules au sein de chacun des blocs doivent être ordonnés par ordre alphabétique
+
 
 ## Membres : 
 * Antony Perzo 
 * Sébastien Liou 
 * Timothée Grandchamp
-* Tanguy Colleville 
+* Tanguy Colleville
 
 
 ## Liens utiles 

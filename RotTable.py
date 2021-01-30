@@ -25,6 +25,7 @@ class RotTable:
         "TC": [36.9, 5.3, -120, 0.9, 6, 0],
         "TG": [34.5, 3.5, 64, 0.9, 34, 0],
     }
+    
     __BORNES = {
         'AA': [[35.56, 35.68], [6.65, 7.8]],
         'AC': [[33.1, 35.7], [-3.9, 6.1]], 
@@ -50,7 +51,7 @@ class RotTable:
                 self.__Rot_Table = rot_dict
             else : 
                 raise Exception("Type of rot_dict is not correct, you should give a dictionnary")
-
+        
     ###################
     # READING METHODS #
     ###################
@@ -99,8 +100,13 @@ class RotTable:
             if self.Symetrique(dinucle) not in self.__Rot_Table.keys():
                 table[self.Symetrique(dinucle)] = []
                 for i in range(len(table[dinucle])):
-                    table[self.Symetrique(dinucle)].append(table[dinucle][i]) if i != 3 else table[self.Symetrique(dinucle)].append(-table[dinucle][i])
+                    if i != 2:
+                        table[self.Symetrique(dinucle)].append(table[dinucle][i])
+                    else:
+                        table[self.Symetrique(dinucle)].append(-table[dinucle][i])
         return RotTable(rot_dict=table)
+
+                    
     
     def Mutate(self, gen):
         if not (type(gen) is int):
@@ -123,20 +129,30 @@ class RotTable:
             self.__Rot_Table[dinucle][angle] = future if future < borne else borne
             
     
-    def Evaluation(self,seq):
+    def Evaluation1(self,seq, ini_D):
         if type(seq) is not str : 
             raise Exception(" seq must be a string which represents dinucleotides")
         traj = Traj3D()
         traj.compute(seq, self.Reconstitution()) # On calcule la trajectoire
         extremite_1 = traj.getTraj()[0]
         extremite_2 = traj.getTraj()[-1]
+
         norme_1=(sum([extremite_1[i]**2 for i in range(len(extremite_1))]))**0.5
         norme_2=(sum([extremite_2[i]**2 for i in range(len(extremite_2))]))**0.5
         norme1_norme2=norme_1*norme_2
         ps_1_2=sum([x * y for x, y in zip(extremite_1, extremite_2)])
         costheta=abs(ps_1_2/norme1_norme2)
         distance=(extremite_2-extremite_1).length
-        return abs(costheta)+distance/len(seq)*1000
+        return (1-abs(costheta)+distance/ini_D)*1000
+
+    def Evaluation(self,seq, ini_D):
+        if type(seq) is not str : 
+            raise Exception(" seq must be a string which represents dinucleotides")
+        traj = Traj3D()
+        traj.compute(seq, self.Reconstitution()) # On calcule la trajectoire
+        extremite_1 = traj.getTraj()[0]
+        extremite_2 = traj.getTraj()[-1]
+        return (extremite_2 - extremite_1).length
 
     def Cross(self, rot_table_2, cut):
         '''Fonction de croisement de 2 individus'''
@@ -149,11 +165,11 @@ class RotTable:
         child2 = {}
         keys = self.__KEYS_UNIQUE
         for j in keys[:cut]:
-            child1[j] = self.getRotTable()[j]
-            child2[j] = rot_table_2.getRotTable()[j]
+            child1[j] = self.getRotTable()[j].copy()
+            child2[j] = rot_table_2.getRotTable()[j].copy()
         for j in keys[cut:]:
-            child1[j] = self.getRotTable()[j]
-            child2[j] = rot_table_2.getRotTable()[j]
+            child1[j] = self.getRotTable()[j].copy()
+            child2[j] = rot_table_2.getRotTable()[j].copy()
         return (RotTable(child1),RotTable(child2))
 
     ###################

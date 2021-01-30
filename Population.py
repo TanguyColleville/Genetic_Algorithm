@@ -3,6 +3,7 @@ from RotTable import RotTable
 from Traj3D import *
 import mathutils
 from operator import itemgetter, attrgetter
+import pickle
 
 class Population():
     """Represents the population of rotation tables (individuals)"""
@@ -18,7 +19,14 @@ class Population():
         self._current_best_index = 0 # Meilleur score à la génération courante
         for e in range(n):
             self.add_to_pop(RotTable(randomGen=True), None) # On ajoute à la population un individu généré aléatoirement avec un score à None par défaut
-    
+        
+        traj_ini = Traj3D()
+        traj_ini.compute(seq, RotTable().Reconstitution()) # On calcule la trajectoire
+        extremite_1_ini = traj_ini.getTraj()[0]
+        extremite_2_ini = traj_ini.getTraj()[-1]
+        self._iniD = (extremite_2_ini-extremite_1_ini).length
+
+
     ##############
     # ASSESSEURS #
     ############## 
@@ -41,6 +49,8 @@ class Population():
     def _Get_Current_Best_Index(self):
         return self._current_best_index
     
+    def _Get_iniD(self):
+        return self._iniD
     #################
     # MODIFICATEURS #
     ################# 
@@ -85,15 +95,15 @@ class Population():
         # k commence proche de 0 donc lisse les scores, puis augmente en passant par 1 ;
         # plus N est grand, plus k augmente, à terme ; pour N à 1000000, k vaut environ 3 à la dernière génération
         for individu in self._pop:
-            individu[1] = (individu[0].Evaluation(self._seq))**k
+            individu[1] = (individu[0].Evaluation(self._seq, self._iniD))**k
 
 
     def eval_pop(self):
         ''' Attribue un score à chaque individu de la population '''
-        current_best_score = (math.inf if self._pop[self._current_best_index][1] is None else self._pop[self._current_best_index][1])
+        current_best_score = math.inf
         best_indiv_index = 0
         for i in range(len(self._pop)): # On parcourt la population...
-            score = self._pop[i][0].Evaluation(self._seq)
+            score = self._pop[i][0].Evaluation(self._seq, self._iniD)
             if score < current_best_score:
                 best_indiv_index = i
                 current_best_score = score
@@ -181,9 +191,9 @@ class Population():
         if not type(alpha)==float and (alpha>1 or alpha<0) : 
             raise Exception("alpha should be a float value between 0 and 1")
         best = self._pop.pop() # On prélève le meilleur
-        mutate_best = RotTable(rot_dict=best[0].getRotTable()) # et on le duplique
+        mutate_best = RotTable(rot_dict=best[0].getRotTable().copy()) # et on le duplique
         mutate_best.Mutate(self._current_gen) # On fait muter la copie du meilleur (de manière certaine)
-        mutate_best_eval = mutate_best.Evaluation(self._seq) # et on calcule son score
+        mutate_best_eval = mutate_best.Evaluation(self._seq, self._iniD) # et on calcule son score
 
         n = len(self._pop)
         k = np.random.binomial(n, alpha) # On génère le nombre d'individus à muter...
@@ -227,7 +237,13 @@ class Population():
             self.select_tournoi_pop(luck_prob, puissance)
         else:
             raise Exception(" selection_method must be either 'Elitisme' or 'Tournoi'")
+        print(self._pop[self._current_best_index][1],self._pop[self._current_best_index][0],'\n')
+        print(self._pop[-2][1],self._pop[-1][0],'\n')
+        print(self._pop[-3][1],self._pop[-2][0],'\n\n')
         self.mutate_pop(alpha)
+        print(self._pop[self._current_best_index][1],self._pop[self._current_best_index][0],'\n')
+        print(self._pop[-2][1],self._pop[-1][0],'\n')
+        print(self._pop[-3][1],self._pop[-2][0],'\n\n\n\n\n')
         self.cross_pop()
         self.update_current_gen()
 
@@ -247,7 +263,9 @@ class Population():
             self.next_gen(n, scaling, selection_method, alpha, luck_prob, puissance)
             print(self._current_best_index)
             print(self._pop)
+        pickle.dump(self, open("Output/pop_avant_eval.p", "wb"))
         self.eval_pop() # pour avoir une population dont tous les individus ont un score
+        pickle.dump(self, open("Output/pop_apres_eval.p", "wb"))
         print(self._current_best_index)
         print(self._pop)
     
@@ -284,6 +302,7 @@ class Population():
         plt.ylabel('Meilleur score')
         plt.title('Evolution du meilleur score de la population au fil des générations')
         plt.plot(x,y,'ro--')
+        plt.savefig("Output/Convergence{}_{}_{}_{}_{}.png".format(n,scaling,selection_method,luck_prob,puissance))
         plt.show()
  
 

@@ -2,6 +2,7 @@ from operator import itemgetter
 
 
 import pickle
+from datetime import datetime
 
 
 from RotTable import RotTable
@@ -336,9 +337,11 @@ class Population():
                 puissance,
                 adapt_var)
             if i % step == 0:
+                self.eval_pop()
                 C.append(self._pop[self._current_best_index][1])
         self.eval_pop()  # pour avoir une population dont tous les individus ont un score
         if (n - 1) % step == 0:
+            self.eval_pop()
             C.append(self._pop[self._current_best_index][1])
         return C
 
@@ -383,3 +386,12 @@ class Population():
         plt.savefig("Output/Convergence{}_{}_{}_{}_{}.png".format(n,
                                                                   scaling, selection_method, luck_prob, puissance))
         plt.show()
+
+    def dump_n_bests(self,n):
+        L = sorted(self._pop, key=itemgetter(1))
+        bests = []
+        for i in range(n):
+            bests.append(L[i])
+        now = datetime.now()
+        time = '_'.join([str(now.hour),str(now.minute),str(now.second)])
+        pickle.dump(bests, open("Output/Best_ " + str(n) + "_individuals_" + time + ".p", "wb"))

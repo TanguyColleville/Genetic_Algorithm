@@ -464,21 +464,33 @@ class Population_sandbox():
             angles.append(new_angle)
             x.append(self._current_gen)
 
-        p1, = host.plot(x, distances, 'ro--', label="Distance")
-        p2, = par1.plot(x, angles, 'go--',  label="Angle")
+        p1, = host.plot(x, distances, 'r-', label="Distance")
+        p2, = par1.plot(x, angles, 'g-',  label="Angle")
 
         host.legend()
 
         host.axis["left"].label.set_color(p1.get_color())
         par1.axis["right"].label.set_color(p2.get_color())
 
+        best_score = distances[-1]
+        string_score = f'Score du meilleur individu final : {best_score:.5f}'
+        plt.title(string_score)
         plt.draw()
         plt.show()
-        print("Meilleure distance: ", distances[-1], "Meilleur angle: ", angles[-1])
+        
+        print("Meilleure distance: ", best_score, "Meilleur angle: ", angles[-1])
         plt.savefig("Output/Population_100_generations_300_double_score.png")
-        self.dump_best_individu()
 
     def dump_best_individu(self):
         pickle.dump(self._pop[self._current_best_distance_index], open("Output/Best_distance_individu__5.p", "wb"))
         pickle.dump(self._pop[self._current_best_angle_index], open("Output/Best_angle_individu__5.p", "wb"))
+
+    def dump_n_bests(self,n):
+        L = sorted(self._pop, key=lambda x: x[1][0])
+        bests = []
+        for i in range(n):
+            bests.append(L[i])
+        now = datetime.now()
+        time = '_'.join([str(now.hour),str(now.minute),str(now.second)])
+        pickle.dump(bests, open("Output/Best_ " + str(n) + "_individuals_" + time + ".p", "wb"))
 

@@ -156,8 +156,9 @@ def draw_seq():
 def main_sandbox():
     lineList = [line.rstrip('\n') for line in open("./Data/plasmid_8k.fasta")]
     seq = ''.join(lineList[1:])
-    pop = Population_sandbox(seq,n=100)
-    pop.evolve_double_graph(300)
+    pop = Population_sandbox(seq,n=50)
+    pop.evolve_double_graph(50, scaling=True)
+    pop.dump_n_bests(20)
 
 
 if __name__ == "__main__":

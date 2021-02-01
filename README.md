@@ -29,16 +29,10 @@ block 1 : Import des modules présents dans python de base
 block 2 : Import de module non présent de base dans python i.e. ceux qu'on a du pip install 
 block 3 : Import de fichiers propre à notre projet, ex import Traj3D
 les modules au sein de chacun des blocs doivent être ordonnés par ordre alphabétique
-
-
-A faire : 
-
-- [ ] Benchmarks : sélection, évaluation, luck_prob, alpha, pertinence réduire var dans mutate
-- [ ] changer évalutation prendre orientation des extrémités en compte (produit scalaire) et normes 
-- [ ] Améliorations pour la présentation : pédagogie (audience novice) ; diagrammes de classe (POO) ; passer vite sur l'organisation ; être très didactique (convaincre et justifier nos choix !) ; éviter de montrer du code ; avoir des bonnes données à montrer (gros plans sur la jointure)
-- [ ] Utiliser un couple d'évaluation avec 2 best à chaque génération ; on ne modifie un individu que s'il est moins bon sur les deux critères
-- [ ] reprendre tous les codes, commenter proprement et virer les commentaires inutiles : 
-reste à faire : genalg et main 
+- [x] Benchmarks : sélection, évaluation, luck_prob, alpha, pertinence réduire var dans mutate
+- [x] changer évalutation prendre orientation des extrémités en compte (produit scalaire) et normes 
+- [x] Utiliser un couple d'évaluation avec 2 best à chaque génération ; on ne modifie un individu que s'il est moins bon sur les deux critères
+- [x] reprendre tous les codes, commenter proprement et virer les commentaires inutiles
 
 
 
